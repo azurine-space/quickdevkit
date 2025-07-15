@@ -3,7 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JSON 포맷터 & 검증 도구</title>
+    <meta name="description" content="QuickDevKit - Lightning fast JSON formatter, validator and beautifier with comment support. Format, validate and debug JSON instantly with multilingual support.">
+    <meta name="keywords" content="json formatter, json validator, json beautifier, online json tool, developer tools, quickdevkit">
+    <title>QuickDevKit - JSON Formatter & Validator Tool</title>
+    
+    <!-- Google AdSense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2369255699430177"
+         crossorigin="anonymous"></script>
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/javascript/javascript.min.js"></script>
@@ -406,21 +413,6 @@
             opacity: 0.8;
         }
 
-        .ad-panel {
-            background: #f3f4f6;
-            border: 1px solid #e5e7eb;
-            border-radius: 0.5rem;
-            padding: 1.5rem;
-            text-align: center;
-            margin-bottom: 2rem;
-            transition: all 0.2s ease;
-        }
-
-        .dark .ad-panel {
-            background: #1f2937;
-            border: 1px solid #374151;
-        }
-
         .footer {
             background: white;
             border-top: 1px solid #e5e7eb;
@@ -468,18 +460,13 @@
     </style>
 </head>
 <body>
-    <!-- Header Banner -->
-    <div class="header-banner">
-        <div data-i18n="headerBanner">📢 Ad Space - Welcome to Developer Tools Collection!</div>
-    </div>
-
     <!-- Header -->
     <header class="header">
         <div class="header-content">
             <div style="display: flex; align-items: center;">
                 <div class="logo">
-                    <div class="logo-icon">{}</div>
-                    <span data-i18n="devTools">Dev Tools</span>
+                    <div class="logo-icon">⚡</div>
+                    <span data-i18n="devTools">QuickDevKit</span>
                 </div>
                 
                 <nav class="nav-tabs">
@@ -553,15 +540,6 @@
                 </div>
             </div>
         </div>
-
-        <!-- Ad Panel -->
-        <div class="ad-panel">
-            <div style="font-size: 0.875rem; color: #6b7280; margin-bottom: 0.5rem;" data-i18n="adTitle">📱 Sidebar Ad Space</div>
-            <div style="font-size: 0.75rem; color: #9ca3af;" data-i18n="adText">
-                More developer tools coming soon!<br>
-                HTML formatter, Unicode converter, URL encoder, etc.
-            </div>
-        </div>
     </main>
 
     <!-- Footer -->
@@ -583,8 +561,7 @@
         const translations = {
             ko: {
                 // Header
-                headerBanner: '📢 광고 영역 - 개발자 도구 모음집에 오신 것을 환영합니다!',
-                devTools: 'Dev Tools',
+                devTools: 'QuickDevKit',
                 jsonTool: 'JSON 도구',
                 markdownSoon: '마크다운 (곧 출시)',
                 base64Soon: 'Base64 (곧 출시)',
@@ -614,18 +591,13 @@
                 outputPlaceholder: '포맷된 JSON이 여기에 표시됩니다...',
                 
                 // Footer
-                footerText1: '© 2025 Dev Tools. 개발자를 위한 유용한 도구 모음집',
-                footerText2: 'JSON 포맷터, 검증기 및 더 많은 도구들',
-                
-                // Ad
-                adTitle: '📱 사이드바 광고 영역',
-                adText: '추가 개발자 도구들이 곧 출시됩니다!<br>HTML 포맷터, 유니코드 변환기, URL 인코더 등'
+                footerText1: '© 2025 QuickDevKit. 개발자를 위한 빠른 도구 모음집',
+                footerText2: 'JSON 포맷터, 검증기 및 더 많은 도구들'
             },
             
             en: {
                 // Header
-                headerBanner: '📢 Ad Space - Welcome to Developer Tools Collection!',
-                devTools: 'Dev Tools',
+                devTools: 'QuickDevKit',
                 jsonTool: 'JSON Tool',
                 markdownSoon: 'Markdown (Coming Soon)',
                 base64Soon: 'Base64 (Coming Soon)',
@@ -655,18 +627,13 @@
                 outputPlaceholder: 'Formatted JSON will be displayed here...',
                 
                 // Footer
-                footerText1: '© 2025 Dev Tools. Useful tool collection for developers',
-                footerText2: 'JSON formatter, validator and more tools',
-                
-                // Ad
-                adTitle: '📱 Sidebar Ad Space',
-                adText: 'More developer tools coming soon!<br>HTML formatter, Unicode converter, URL encoder, etc.'
+                footerText1: '© 2025 QuickDevKit. Lightning fast tools for developers',
+                footerText2: 'JSON formatter, validator and more developer tools'
             },
             
             ja: {
                 // Header
-                headerBanner: '📢 広告エリア - 開発者ツールコレクションへようこそ！',
-                devTools: 'Dev Tools',
+                devTools: 'QuickDevKit',
                 jsonTool: 'JSONツール',
                 markdownSoon: 'Markdown（近日公開）',
                 base64Soon: 'Base64（近日公開）',
@@ -696,18 +663,13 @@
                 outputPlaceholder: 'フォーマット済みJSONがここに表示されます...',
                 
                 // Footer
-                footerText1: '© 2025 Dev Tools. 開発者のための便利なツール集',
-                footerText2: 'JSONフォーマッター、バリデーター、その他のツール',
-                
-                // Ad
-                adTitle: '📱 サイドバー広告エリア',
-                adText: '追加の開発者ツールが近日公開！<br>HTMLフォーマッター、Unicode変換器、URLエンコーダーなど'
+                footerText1: '© 2025 QuickDevKit. 開発者のための高速ツール集',
+                footerText2: 'JSONフォーマッター、バリデーター、その他の開発者ツール'
             },
             
             'zh-CN': {
                 // Header
-                headerBanner: '📢 广告区域 - 欢迎使用开发者工具集！',
-                devTools: 'Dev Tools',
+                devTools: 'QuickDevKit',
                 jsonTool: 'JSON工具',
                 markdownSoon: 'Markdown（即将推出）',
                 base64Soon: 'Base64（即将推出）',
@@ -737,12 +699,8 @@
                 outputPlaceholder: '格式化的JSON将显示在这里...',
                 
                 // Footer
-                footerText1: '© 2025 Dev Tools. 开发者实用工具集',
-                footerText2: 'JSON格式化器、验证器及更多工具',
-                
-                // Ad
-                adTitle: '📱 侧边栏广告区域',
-                adText: '更多开发者工具即将推出！<br>HTML格式化器、Unicode转换器、URL编码器等'
+                footerText1: '© 2025 QuickDevKit. 开发者的快速工具集',
+                footerText2: 'JSON格式化器、验证器及更多开发者工具'
             }
         };
 
