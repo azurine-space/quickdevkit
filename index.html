@@ -1,0 +1,1439 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON 포맷터 & 검증 도구</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/codemirror.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/mode/javascript/javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/matchbrackets.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/addon/edit/closebrackets.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.16/theme/material-darker.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f9fafb;
+            min-height: 100vh;
+            transition: all 0.2s ease;
+        }
+
+        body.dark {
+            background-color: #111827;
+            color: #f9fafb;
+        }
+
+        .header-banner {
+            background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+            color: white;
+            padding: 1rem;
+            text-align: center;
+            font-size: 0.875rem;
+        }
+
+        .header {
+            background: white;
+            border-bottom: 1px solid #e5e7eb;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            transition: all 0.2s ease;
+        }
+
+        .dark .header {
+            background: #1f2937;
+            border-bottom: 1px solid #374151;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #1f2937;
+        }
+
+        .dark .logo {
+            color: #f9fafb;
+        }
+
+        .logo-icon {
+            width: 2rem;
+            height: 2rem;
+            background: #3b82f6;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+
+        .nav-tabs {
+            display: flex;
+            gap: 0.25rem;
+            margin-left: 2rem;
+        }
+
+        .nav-tab {
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            border: none;
+            background: none;
+        }
+
+        .nav-tab.active {
+            background: #dbeafe;
+            color: #1d4ed8;
+        }
+
+        .dark .nav-tab.active {
+            background: #1e3a8a;
+            color: #93c5fd;
+        }
+
+        .nav-tab:not(.active) {
+            color: #6b7280;
+        }
+
+        .nav-tab:not(.active):hover {
+            color: #374151;
+        }
+
+        .dark .nav-tab:not(.active) {
+            color: #9ca3af;
+        }
+
+        .dark .nav-tab:not(.active):hover {
+            color: #d1d5db;
+        }
+
+        .theme-toggle {
+            background: #f3f4f6;
+            border: none;
+            border-radius: 0.375rem;
+            padding: 0.5rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: #6b7280;
+        }
+
+        .theme-toggle:hover {
+            background: #e5e7eb;
+            color: #374151;
+        }
+
+        .dark .theme-toggle {
+            background: #374151;
+            color: #9ca3af;
+        }
+
+        .dark .theme-toggle:hover {
+            background: #4b5563;
+            color: #d1d5db;
+        }
+
+        .language-select {
+            background: #f3f4f6;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            padding: 0.5rem;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            color: #374151;
+        }
+
+        .language-select:hover {
+            background: #e5e7eb;
+            border-color: #9ca3af;
+        }
+
+        .language-select:focus {
+            outline: none;
+            ring: 2px;
+            ring-color: #3b82f6;
+            border-color: #3b82f6;
+        }
+
+        .dark .language-select {
+            background: #374151;
+            border-color: #4b5563;
+            color: #d1d5db;
+        }
+
+        .dark .language-select:hover {
+            background: #4b5563;
+            border-color: #6b7280;
+        }
+
+        .dark .language-select:focus {
+            border-color: #3b82f6;
+        }
+
+        .main-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        .editor-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .editor-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .editor-panel {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: all 0.2s ease;
+        }
+
+        .dark .editor-panel {
+            background: #1f2937;
+            border: 1px solid #374151;
+        }
+
+        .panel-header {
+            background: #f9fafb;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 0.75rem 1rem;
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            transition: all 0.2s ease;
+        }
+
+        .dark .panel-header {
+            background: #374151;
+            border-bottom: 1px solid #4b5563;
+        }
+
+        .panel-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #1f2937;
+            flex: 1;
+        }
+
+        .dark .panel-title {
+            color: #f9fafb;
+        }
+
+        .panel-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn {
+            background: #f3f4f6;
+            border: none;
+            border-radius: 0.375rem;
+            padding: 0.375rem 0.75rem;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .btn:hover {
+            background: #e5e7eb;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: #2563eb;
+        }
+
+        .dark .btn {
+            background: #4b5563;
+            color: #d1d5db;
+        }
+
+        .dark .btn:hover {
+            background: #6b7280;
+        }
+
+        .editor-wrapper {
+            position: relative;
+            height: 400px;
+            border: 1px solid #e5e7eb;
+            border-radius: 0 0 0.5rem 0.5rem;
+            overflow: hidden;
+        }
+
+        .dark .editor-wrapper {
+            border-color: #374151;
+        }
+
+        .CodeMirror {
+            height: 400px !important;
+            width: 100% !important;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 14px;
+            line-height: 1.5;
+            border-radius: 0 0 0.5rem 0.5rem;
+        }
+
+        .CodeMirror-scroll {
+            max-height: 400px !important;
+            overflow-y: auto !important;
+            overflow-x: auto !important;
+        }
+
+        .error-line {
+            background: rgba(248, 113, 113, 0.2) !important;
+            border-left: 4px solid #ef4444 !important;
+        }
+
+        .error-line-gutter {
+            background: rgba(248, 113, 113, 0.3) !important;
+            color: #dc2626 !important;
+            font-weight: bold !important;
+        }
+
+        .comment-notice {
+            padding: 0.5rem 1rem;
+            background: #f0f9ff;
+            border-bottom: 1px solid #e5e7eb;
+            font-size: 0.75rem;
+            color: #0369a1;
+            transition: all 0.2s ease;
+        }
+
+        .dark .comment-notice {
+            background: #1e3a8a;
+            border-bottom: 1px solid #374151;
+            color: #93c5fd;
+        }
+
+        .status-panel {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            transition: all 0.2s ease;
+        }
+
+        .dark .status-panel {
+            background: #1f2937;
+            border: 1px solid #374151;
+        }
+
+        .status-success {
+            border-color: #10b981;
+            background: #ecfdf5;
+        }
+
+        .dark .status-success {
+            background: #064e3b;
+            border-color: #065f46;
+        }
+
+        .status-error {
+            border-color: #ef4444;
+            background: #fef2f2;
+        }
+
+        .dark .status-error {
+            background: #7f1d1d;
+            border-color: #991b1b;
+        }
+
+        .status-content {
+            display: flex;
+            align-items: start;
+            gap: 0.75rem;
+        }
+
+        .status-icon {
+            width: 1.25rem;
+            height: 1.25rem;
+            margin-top: 0.125rem;
+        }
+
+        .status-text {
+            flex: 1;
+        }
+
+        .status-title {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .status-message {
+            font-size: 0.875rem;
+            opacity: 0.8;
+        }
+
+        .ad-panel {
+            background: #f3f4f6;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            text-align: center;
+            margin-bottom: 2rem;
+            transition: all 0.2s ease;
+        }
+
+        .dark .ad-panel {
+            background: #1f2937;
+            border: 1px solid #374151;
+        }
+
+        .footer {
+            background: white;
+            border-top: 1px solid #e5e7eb;
+            padding: 1.5rem;
+            text-align: center;
+            margin-top: 3rem;
+            transition: all 0.2s ease;
+        }
+
+        .dark .footer {
+            background: #1f2937;
+            border-top: 1px solid #374151;
+        }
+
+        .footer-text {
+            color: #6b7280;
+            font-size: 0.875rem;
+            line-height: 1.5;
+        }
+
+        .dark .footer-text {
+            color: #9ca3af;
+        }
+
+        .copied-badge {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: #10b981;
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+            transform: translateY(-100%);
+            opacity: 0;
+            transition: all 0.3s ease;
+            pointer-events: none;
+        }
+
+        .copied-badge.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Banner -->
+    <div class="header-banner">
+        <div data-i18n="headerBanner">📢 Ad Space - Welcome to Developer Tools Collection!</div>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div style="display: flex; align-items: center;">
+                <div class="logo">
+                    <div class="logo-icon">{}</div>
+                    <span data-i18n="devTools">Dev Tools</span>
+                </div>
+                
+                <nav class="nav-tabs">
+                    <button class="nav-tab active" onclick="setActiveTab('json')" data-i18n="jsonTool">JSON Tool</button>
+                    <button class="nav-tab" disabled data-i18n="markdownSoon">Markdown (Coming Soon)</button>
+                    <button class="nav-tab" disabled data-i18n="base64Soon">Base64 (Coming Soon)</button>
+                </nav>
+            </div>
+
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <button class="theme-toggle" onclick="toggleTheme()" title="테마 변경">
+                    <span id="theme-icon">🌙</span>
+                </button>
+                
+                <select class="language-select" id="language-select" onchange="changeLanguage(this.value)">
+                    <option value="en">English</option>
+                    <option value="ko">한국어</option>
+                    <option value="ja">日本語</option>
+                    <option value="zh-CN">中文</option>
+                </select>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="editor-container">
+            <!-- Input Panel -->
+            <div class="editor-panel">
+                <div class="panel-header">
+                    <h2 class="panel-title" data-i18n="jsonInput">JSON Input</h2>
+                    <div class="panel-actions">
+                        <button class="btn" onclick="loadSample()" data-i18n="loadSample">Load Sample</button>
+                        <button class="btn" onclick="clearInput()" data-i18n="clear">Clear</button>
+                    </div>
+                </div>
+                <div class="comment-notice" data-i18n="commentNotice">
+                    💡 Comments supported: // single line comments and /* multi-line comments */
+                </div>
+                <div class="editor-wrapper">
+                    <div id="input-editor"></div>
+                </div>
+            </div>
+
+            <!-- Output Panel -->
+            <div class="editor-panel">
+                <div class="panel-header">
+                    <h2 class="panel-title" data-i18n="formattedJson">Formatted JSON</h2>
+                    <div class="panel-actions">
+                        <button class="btn" onclick="minifyJson()" id="minify-btn" disabled data-i18n="minify">Minify</button>
+                        <button class="btn btn-primary" onclick="copyOutput()" id="copy-btn" disabled>
+                            <span id="copy-icon">📋</span>
+                            <span id="copy-text" data-i18n="copy">Copy</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="editor-wrapper" style="position: relative;">
+                    <div id="output-editor"></div>
+                    <div class="copied-badge" id="copied-badge" data-i18n="copied">Copied!</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Status Panel -->
+        <div class="status-panel" id="status-panel" style="display: none;">
+            <div class="status-content">
+                <div class="status-icon" id="status-icon"></div>
+                <div class="status-text">
+                    <div class="status-title" id="status-title"></div>
+                    <div class="status-message" id="status-message"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Ad Panel -->
+        <div class="ad-panel">
+            <div style="font-size: 0.875rem; color: #6b7280; margin-bottom: 0.5rem;" data-i18n="adTitle">📱 Sidebar Ad Space</div>
+            <div style="font-size: 0.75rem; color: #9ca3af;" data-i18n="adText">
+                More developer tools coming soon!<br>
+                HTML formatter, Unicode converter, URL encoder, etc.
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-text">
+            <p data-i18n="footerText1">© 2025 Dev Tools. Useful tool collection for developers</p>
+            <p style="margin-top: 0.25rem;" data-i18n="footerText2">JSON formatter, validator and more tools</p>
+        </div>
+    </footer>
+
+    <script>
+        // Global variables
+        let inputEditor, outputEditor;
+        let isDarkMode = false;
+        let errorLineWidget = null;
+        let currentLanguage = 'en'; // Default to English
+
+        // Language translations
+        const translations = {
+            ko: {
+                // Header
+                headerBanner: '📢 광고 영역 - 개발자 도구 모음집에 오신 것을 환영합니다!',
+                devTools: 'Dev Tools',
+                jsonTool: 'JSON 도구',
+                markdownSoon: '마크다운 (곧 출시)',
+                base64Soon: 'Base64 (곧 출시)',
+                
+                // Panel headers
+                jsonInput: 'JSON 입력',
+                formattedJson: '포맷된 JSON',
+                
+                // Buttons
+                loadSample: '샘플 로드',
+                clear: '지우기',
+                minify: '압축',
+                copy: '복사',
+                copied: '복사됨!',
+                
+                // Messages
+                commentNotice: '💡 주석 지원: // 단일 라인 주석과 /* 멀티 라인 주석 */ 사용 가능',
+                validJson: '유효한 JSON입니다!',
+                successFormat: '성공적으로 포맷되었습니다. (주석은 출력에서 제거됩니다)',
+                syntaxError: 'JSON 문법 오류',
+                minifyFailed: '압축 실패',
+                invalidJson: '유효하지 않은 JSON입니다.',
+                copyFailed: '복사에 실패했습니다.',
+                
+                // Placeholders
+                inputPlaceholder: 'JSON을 입력하세요...',
+                outputPlaceholder: '포맷된 JSON이 여기에 표시됩니다...',
+                
+                // Footer
+                footerText1: '© 2025 Dev Tools. 개발자를 위한 유용한 도구 모음집',
+                footerText2: 'JSON 포맷터, 검증기 및 더 많은 도구들',
+                
+                // Ad
+                adTitle: '📱 사이드바 광고 영역',
+                adText: '추가 개발자 도구들이 곧 출시됩니다!<br>HTML 포맷터, 유니코드 변환기, URL 인코더 등'
+            },
+            
+            en: {
+                // Header
+                headerBanner: '📢 Ad Space - Welcome to Developer Tools Collection!',
+                devTools: 'Dev Tools',
+                jsonTool: 'JSON Tool',
+                markdownSoon: 'Markdown (Coming Soon)',
+                base64Soon: 'Base64 (Coming Soon)',
+                
+                // Panel headers
+                jsonInput: 'JSON Input',
+                formattedJson: 'Formatted JSON',
+                
+                // Buttons
+                loadSample: 'Load Sample',
+                clear: 'Clear',
+                minify: 'Minify',
+                copy: 'Copy',
+                copied: 'Copied!',
+                
+                // Messages
+                commentNotice: '💡 Comments supported: // single line comments and /* multi-line comments */',
+                validJson: 'Valid JSON!',
+                successFormat: 'Successfully formatted. (Comments are removed from output)',
+                syntaxError: 'JSON Syntax Error',
+                minifyFailed: 'Minify Failed',
+                invalidJson: 'Invalid JSON.',
+                copyFailed: 'Failed to copy.',
+                
+                // Placeholders
+                inputPlaceholder: 'Enter JSON here...',
+                outputPlaceholder: 'Formatted JSON will be displayed here...',
+                
+                // Footer
+                footerText1: '© 2025 Dev Tools. Useful tool collection for developers',
+                footerText2: 'JSON formatter, validator and more tools',
+                
+                // Ad
+                adTitle: '📱 Sidebar Ad Space',
+                adText: 'More developer tools coming soon!<br>HTML formatter, Unicode converter, URL encoder, etc.'
+            },
+            
+            ja: {
+                // Header
+                headerBanner: '📢 広告エリア - 開発者ツールコレクションへようこそ！',
+                devTools: 'Dev Tools',
+                jsonTool: 'JSONツール',
+                markdownSoon: 'Markdown（近日公開）',
+                base64Soon: 'Base64（近日公開）',
+                
+                // Panel headers
+                jsonInput: 'JSON入力',
+                formattedJson: 'フォーマット済みJSON',
+                
+                // Buttons
+                loadSample: 'サンプル読み込み',
+                clear: 'クリア',
+                minify: '圧縮',
+                copy: 'コピー',
+                copied: 'コピー完了！',
+                
+                // Messages
+                commentNotice: '💡 コメント対応: // 単行コメント と /* 複数行コメント */',
+                validJson: '有効なJSONです！',
+                successFormat: '正常にフォーマットされました。（コメントは出力から削除されます）',
+                syntaxError: 'JSON構文エラー',
+                minifyFailed: '圧縮失敗',
+                invalidJson: '無効なJSONです。',
+                copyFailed: 'コピーに失敗しました。',
+                
+                // Placeholders
+                inputPlaceholder: 'JSONを入力してください...',
+                outputPlaceholder: 'フォーマット済みJSONがここに表示されます...',
+                
+                // Footer
+                footerText1: '© 2025 Dev Tools. 開発者のための便利なツール集',
+                footerText2: 'JSONフォーマッター、バリデーター、その他のツール',
+                
+                // Ad
+                adTitle: '📱 サイドバー広告エリア',
+                adText: '追加の開発者ツールが近日公開！<br>HTMLフォーマッター、Unicode変換器、URLエンコーダーなど'
+            },
+            
+            'zh-CN': {
+                // Header
+                headerBanner: '📢 广告区域 - 欢迎使用开发者工具集！',
+                devTools: 'Dev Tools',
+                jsonTool: 'JSON工具',
+                markdownSoon: 'Markdown（即将推出）',
+                base64Soon: 'Base64（即将推出）',
+                
+                // Panel headers
+                jsonInput: 'JSON输入',
+                formattedJson: '格式化JSON',
+                
+                // Buttons
+                loadSample: '加载示例',
+                clear: '清空',
+                minify: '压缩',
+                copy: '复制',
+                copied: '已复制！',
+                
+                // Messages
+                commentNotice: '💡 支持注释：// 单行注释 和 /* 多行注释 */',
+                validJson: '有效的JSON！',
+                successFormat: '格式化成功。（注释已从输出中移除）',
+                syntaxError: 'JSON语法错误',
+                minifyFailed: '压缩失败',
+                invalidJson: '无效的JSON。',
+                copyFailed: '复制失败。',
+                
+                // Placeholders
+                inputPlaceholder: '请输入JSON...',
+                outputPlaceholder: '格式化的JSON将显示在这里...',
+                
+                // Footer
+                footerText1: '© 2025 Dev Tools. 开发者实用工具集',
+                footerText2: 'JSON格式化器、验证器及更多工具',
+                
+                // Ad
+                adTitle: '📱 侧边栏广告区域',
+                adText: '更多开发者工具即将推出！<br>HTML格式化器、Unicode转换器、URL编码器等'
+            }
+        };
+
+        // Get translation text
+        function t(key) {
+            return translations[currentLanguage][key] || translations['en'][key] || key;
+        }
+
+        // Detect browser language
+        function detectBrowserLanguage() {
+            // Get browser languages in order of preference
+            const browserLanguages = [];
+            
+            // Add navigator.language
+            if (navigator.language) {
+                browserLanguages.push(navigator.language);
+            }
+            
+            // Add navigator.languages array
+            if (navigator.languages && navigator.languages.length > 0) {
+                browserLanguages.push(...navigator.languages);
+            }
+            
+            // Add locale from Intl
+            try {
+                const locale = Intl.DateTimeFormat().resolvedOptions().locale;
+                if (locale) {
+                    browserLanguages.push(locale);
+                }
+            } catch (e) {
+                // Intl might not be available
+            }
+            
+            // Add language based on timezone/region detection
+            const regionLang = detectLanguageFromRegion();
+            if (regionLang) {
+                browserLanguages.push(regionLang);
+            }
+            
+            // Supported languages
+            const supportedLanguages = Object.keys(translations);
+            
+            // Try to match languages
+            for (const browserLang of browserLanguages) {
+                const lang = browserLang.toLowerCase();
+                
+                // Exact match (e.g., 'ko' -> 'ko')
+                if (supportedLanguages.includes(lang)) {
+                    return lang;
+                }
+                
+                // Language code match (e.g., 'ko-KR' -> 'ko')
+                const langCode = lang.split('-')[0];
+                if (supportedLanguages.includes(langCode)) {
+                    return langCode;
+                }
+                
+                // Special case for Chinese
+                if (lang.includes('zh')) {
+                    if (lang.includes('cn') || lang.includes('hans') || lang.includes('sg')) {
+                        return 'zh-CN'; // Simplified Chinese
+                    }
+                    // Default to Simplified Chinese for other Chinese variants
+                    return 'zh-CN';
+                }
+            }
+            
+            // Default to English if no match found
+            return 'en';
+        }
+
+        // Detect language from region/timezone
+        function detectLanguageFromRegion() {
+            try {
+                // Get timezone
+                const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+                
+                // Timezone to language mapping
+                const timezoneToLanguage = {
+                    // Korea
+                    'Asia/Seoul': 'ko',
+                    
+                    // Japan
+                    'Asia/Tokyo': 'ja',
+                    
+                    // China
+                    'Asia/Shanghai': 'zh-CN',
+                    'Asia/Beijing': 'zh-CN',
+                    'Asia/Chongqing': 'zh-CN',
+                    'Asia/Harbin': 'zh-CN',
+                    'Asia/Kashgar': 'zh-CN',
+                    'Asia/Urumqi': 'zh-CN',
+                    
+                    // Taiwan/Hong Kong (using simplified for now)
+                    'Asia/Taipei': 'zh-CN',
+                    'Asia/Hong_Kong': 'zh-CN',
+                    'Asia/Macau': 'zh-CN',
+                    
+                    // English speaking countries/regions
+                    'America/New_York': 'en',
+                    'America/Los_Angeles': 'en',
+                    'America/Chicago': 'en',
+                    'America/Denver': 'en',
+                    'America/Phoenix': 'en',
+                    'America/Anchorage': 'en',
+                    'Pacific/Honolulu': 'en',
+                    'Europe/London': 'en',
+                    'Australia/Sydney': 'en',
+                    'Australia/Melbourne': 'en',
+                    'Australia/Perth': 'en',
+                    'Pacific/Auckland': 'en',
+                    'America/Toronto': 'en',
+                    'America/Vancouver': 'en'
+                };
+                
+                if (timezone && timezoneToLanguage[timezone]) {
+                    return timezoneToLanguage[timezone];
+                }
+                
+                // Fallback: analyze timezone string
+                if (timezone) {
+                    const tz = timezone.toLowerCase();
+                    
+                    if (tz.includes('asia/seoul')) return 'ko';
+                    if (tz.includes('asia/tokyo')) return 'ja';
+                    if (tz.includes('asia/shanghai') || tz.includes('asia/beijing')) return 'zh-CN';
+                    if (tz.includes('america/') || tz.includes('europe/london') || 
+                        tz.includes('australia/') || tz.includes('pacific/auckland')) return 'en';
+                }
+                
+                return null;
+            } catch (e) {
+                // Could not detect timezone
+                return null;
+            }
+        }
+
+        // Detect language from HTTP headers (using additional methods)
+        function detectLanguageFromHeaders() {
+            // We can't access HTTP headers directly in browser JavaScript,
+            // but we can use other browser APIs that might give us similar info
+            
+            const detectedLanguages = [];
+            
+            try {
+                // Check if there's any Accept-Language-like info we can infer
+                // from various browser APIs
+                
+                // Currency/number formatting can give us region hints
+                const numberFormat = new Intl.NumberFormat();
+                const currency = numberFormat.resolvedOptions().currency;
+                
+                const currencyToLanguage = {
+                    'KRW': 'ko',  // Korean Won
+                    'JPY': 'ja',  // Japanese Yen
+                    'CNY': 'zh-CN', // Chinese Yuan
+                    'USD': 'en',  // US Dollar
+                    'GBP': 'en',  // British Pound
+                    'CAD': 'en',  // Canadian Dollar
+                    'AUD': 'en',  // Australian Dollar
+                    'NZD': 'en'   // New Zealand Dollar
+                };
+                
+                if (currency && currencyToLanguage[currency]) {
+                    detectedLanguages.push(currencyToLanguage[currency]);
+                }
+                
+                // Date formatting patterns can also give hints
+                const dateFormat = new Intl.DateTimeFormat();
+                const formatOptions = dateFormat.resolvedOptions();
+                
+                if (formatOptions.calendar === 'japanese') {
+                    detectedLanguages.push('ja');
+                }
+                
+                // Check number formatting style
+                const testNumber = (12345.67).toLocaleString();
+                if (testNumber.includes('，')) { // Chinese comma
+                    detectedLanguages.push('zh-CN');
+                } else if (testNumber.includes('12,345')) { // English-style formatting
+                    detectedLanguages.push('en');
+                }
+                
+            } catch (e) {
+                // Could not detect language from formatting
+            }
+            
+            return detectedLanguages;
+        }
+
+        // Update UI text based on current language
+        function updateUI() {
+            document.querySelectorAll('[data-i18n]').forEach(element => {
+                const key = element.getAttribute('data-i18n');
+                const translation = t(key);
+                
+                if (element.innerHTML.includes('<br>')) {
+                    element.innerHTML = translation;
+                } else {
+                    element.textContent = translation;
+                }
+            });
+
+            // Update placeholders
+            if (inputEditor) {
+                inputEditor.setOption('placeholder', t('inputPlaceholder'));
+            }
+            if (outputEditor) {
+                outputEditor.setOption('placeholder', t('outputPlaceholder'));
+            }
+        }
+
+        // Change language
+        function changeLanguage(lang) {
+            currentLanguage = lang;
+            updateUI();
+            
+            // Save language preference (with error handling)
+            try {
+                localStorage.setItem('preferredLanguage', lang);
+            } catch (e) {
+                // Could not save language preference
+            }
+        }
+
+        // Load language preference
+        function loadLanguagePreference() {
+            try {
+                const saved = localStorage.getItem('preferredLanguage');
+                if (saved && translations[saved]) {
+                    currentLanguage = saved;
+                } else {
+                    // No saved preference, detect browser language
+                    currentLanguage = detectBrowserLanguage();
+                }
+                document.getElementById('language-select').value = currentLanguage;
+            } catch (e) {
+                // Could not load language preference, detecting browser language
+                currentLanguage = detectBrowserLanguage();
+                document.getElementById('language-select').value = currentLanguage;
+            }
+        }
+
+        // Initialize CodeMirror editors
+        function initializeEditors() {
+            // Input editor
+            inputEditor = CodeMirror(document.getElementById('input-editor'), {
+                mode: { name: "javascript", json: true },
+                lineNumbers: true,
+                matchBrackets: true,
+                autoCloseBrackets: true,
+                indentUnit: 2,
+                tabSize: 2,
+                lineWrapping: true,
+                viewportMargin: 10,
+                scrollbarStyle: "native",
+                placeholder: t('inputPlaceholder'),
+                theme: 'default'
+            });
+
+            // Output editor (read-only)
+            outputEditor = CodeMirror(document.getElementById('output-editor'), {
+                mode: { name: "javascript", json: true },
+                lineNumbers: true,
+                matchBrackets: true,
+                indentUnit: 2,
+                tabSize: 2,
+                lineWrapping: true,
+                viewportMargin: 10,
+                scrollbarStyle: "native",
+                readOnly: true,
+                placeholder: t('outputPlaceholder'),
+                theme: 'default'
+            });
+
+            // Input change handler
+            inputEditor.on('change', function() {
+                processJson();
+            });
+
+            // Refresh editors to ensure proper rendering
+            setTimeout(() => {
+                if (inputEditor && outputEditor) {
+                    inputEditor.refresh();
+                    outputEditor.refresh();
+                    
+                    // 윈도우 리사이즈 이벤트 핸들러
+                    window.addEventListener('resize', function() {
+                        setTimeout(() => {
+                            inputEditor.refresh();
+                            outputEditor.refresh();
+                        }, 100);
+                    });
+                }
+            }, 200);
+
+            // Apply initial theme
+            applyEditorTheme();
+        }
+
+        // Remove comments from JSON string (JSON5 style)
+        function removeJsonComments(jsonString) {
+            let result = '';
+            let inString = false;
+            let inSingleComment = false;
+            let inMultiComment = false;
+            let stringChar = '';
+            let escaped = false;
+            
+            for (let i = 0; i < jsonString.length; i++) {
+                const char = jsonString[i];
+                const nextChar = jsonString[i + 1] || '';
+                
+                // Handle escaped characters
+                if (escaped) {
+                    if (inString) result += char;
+                    escaped = false;
+                    continue;
+                }
+                
+                // Handle escape sequences in strings
+                if (char === '\\' && inString) {
+                    escaped = true;
+                    result += char;
+                    continue;
+                }
+                
+                // Start of string
+                if (!inSingleComment && !inMultiComment && !inString && (char === '"' || char === "'")) {
+                    inString = true;
+                    stringChar = char;
+                    result += char;
+                    continue;
+                }
+                
+                // End of string
+                if (inString && char === stringChar && !escaped) {
+                    inString = false;
+                    stringChar = '';
+                    result += char;
+                    continue;
+                }
+                
+                // Skip comment detection inside strings
+                if (inString) {
+                    result += char;
+                    continue;
+                }
+                
+                // Start of single line comment
+                if (!inMultiComment && char === '/' && nextChar === '/') {
+                    inSingleComment = true;
+                    i++; // skip next char
+                    continue;
+                }
+                
+                // Start of multi line comment
+                if (!inSingleComment && char === '/' && nextChar === '*') {
+                    inMultiComment = true;
+                    i++; // skip next char
+                    continue;
+                }
+                
+                // End of single line comment
+                if (inSingleComment && (char === '\n' || char === '\r')) {
+                    inSingleComment = false;
+                    result += char; // preserve line breaks
+                    continue;
+                }
+                
+                // End of multi line comment
+                if (inMultiComment && char === '*' && nextChar === '/') {
+                    inMultiComment = false;
+                    i++; // skip next char
+                    continue;
+                }
+                
+                // Add character if not in comment
+                if (!inSingleComment && !inMultiComment) {
+                    result += char;
+                }
+            }
+            
+            return result;
+        }
+
+        // Process JSON input
+        function processJson() {
+            const input = inputEditor.getValue().trim();
+            
+            // Clear previous error highlights
+            clearErrorHighlight();
+            
+            if (!input) {
+                outputEditor.setValue('');
+                hideStatus();
+                updateButtonStates(false);
+                return;
+            }
+
+            try {
+                // Remove comments before parsing
+                const cleanJson = removeJsonComments(input);
+                const parsed = JSON.parse(cleanJson);
+                const formatted = JSON.stringify(parsed, null, 2);
+                outputEditor.setValue(formatted);
+                showStatus('success', t('validJson'), t('successFormat'));
+                updateButtonStates(true);
+            } catch (error) {
+                outputEditor.setValue('');
+                showStatus('error', t('syntaxError'), error.message);
+                updateButtonStates(false);
+                
+                // Highlight error line
+                highlightErrorLine(input, error.message);
+            }
+        }
+
+        // Clear error highlight
+        function clearErrorHighlight() {
+            if (inputEditor) {
+                inputEditor.eachLine(function(line) {
+                    inputEditor.removeLineClass(line, 'background', 'error-line');
+                    inputEditor.removeLineClass(line, 'gutter', 'error-line-gutter');
+                });
+            }
+        }
+
+        // Highlight error line
+        function highlightErrorLine(input, errorMessage) {
+            const match = errorMessage.match(/at position (\d+)/);
+            if (match) {
+                const position = parseInt(match[1]);
+                const beforeError = input.substring(0, position);
+                const lineNumber = beforeError.split('\n').length - 1;
+                
+                if (lineNumber >= 0 && lineNumber < inputEditor.lineCount()) {
+                    inputEditor.addLineClass(lineNumber, 'background', 'error-line');
+                    inputEditor.addLineClass(lineNumber, 'gutter', 'error-line-gutter');
+                }
+            }
+        }
+
+        // Show status message
+        function showStatus(type, title, message) {
+            const panel = document.getElementById('status-panel');
+            const icon = document.getElementById('status-icon');
+            const titleEl = document.getElementById('status-title');
+            const messageEl = document.getElementById('status-message');
+
+            panel.className = `status-panel status-${type}`;
+            panel.style.display = 'block';
+            
+            icon.innerHTML = type === 'success' ? '✅' : '❌';
+            titleEl.textContent = title;
+            messageEl.textContent = message;
+        }
+
+        // Hide status panel
+        function hideStatus() {
+            document.getElementById('status-panel').style.display = 'none';
+        }
+
+        // Update button states
+        function updateButtonStates(hasValidOutput) {
+            document.getElementById('minify-btn').disabled = !hasValidOutput;
+            document.getElementById('copy-btn').disabled = !hasValidOutput;
+        }
+
+        // Copy output to clipboard
+        async function copyOutput() {
+            const output = outputEditor.getValue();
+            if (!output) return;
+
+            try {
+                await navigator.clipboard.writeText(output);
+                
+                // Show copied badge
+                const badge = document.getElementById('copied-badge');
+                badge.classList.add('show');
+                
+                // Update button text
+                document.getElementById('copy-icon').textContent = '✅';
+                document.getElementById('copy-text').textContent = t('copied');
+                
+                // Reset after 2 seconds
+                setTimeout(() => {
+                    badge.classList.remove('show');
+                    document.getElementById('copy-icon').textContent = '📋';
+                    document.getElementById('copy-text').textContent = t('copy');
+                }, 2000);
+                
+            } catch (err) {
+                alert(t('copyFailed'));
+            }
+        }
+
+        // Minify JSON
+        function minifyJson() {
+            const output = outputEditor.getValue();
+            if (!output) return;
+
+            try {
+                // Output is already clean JSON (comments removed), so parse directly
+                const parsed = JSON.parse(output);
+                const minified = JSON.stringify(parsed);
+                outputEditor.setValue(minified);
+            } catch (err) {
+                showStatus('error', t('minifyFailed'), t('invalidJson'));
+            }
+        }
+
+        // Load sample JSON
+        function loadSample() {
+            clearErrorHighlight();
+            
+            const samples = {
+                ko: `{
+  // 사용자 기본 정보
+  "name": "홍길동",
+  "age": 30,
+  
+  /* 주소 정보 - 다중 라인 주석
+     여러 줄에 걸친 설명이 가능합니다 */
+  "address": {
+    "city": "서울", // 도시명
+    "district": "강남구" // 구/군 정보
+  },
+  
+  // 취미 목록 (배열)
+  "hobbies": [
+    "독서",      // 책 읽기
+    "영화감상",   // 영화 보기  
+    "코딩"       // 프로그래밍
+  ],
+  
+  "active": true, // 활성 상태
+  
+  // 메타데이터
+  "metadata": {
+    "createdAt": "2025-07-15T12:00:00Z",    // 생성일시
+    "lastModified": "2025-07-15T12:30:00Z"  // 최종 수정일시
+  }
+}`,
+                en: `{
+  // User basic information
+  "name": "John Doe",
+  "age": 30,
+  
+  /* Address information - Multi-line comment
+     Multi-line descriptions are possible */
+  "address": {
+    "city": "New York", // City name
+    "district": "Manhattan" // District information
+  },
+  
+  // Hobbies list (array)
+  "hobbies": [
+    "reading",     // Reading books
+    "movies",      // Watching movies
+    "coding"       // Programming
+  ],
+  
+  "active": true, // Active status
+  
+  // Metadata
+  "metadata": {
+    "createdAt": "2025-07-15T12:00:00Z",    // Created datetime
+    "lastModified": "2025-07-15T12:30:00Z"  // Last modified datetime
+  }
+}`,
+                ja: `{
+  // ユーザー基本情報
+  "name": "田中太郎",
+  "age": 30,
+  
+  /* 住所情報 - 複数行コメント
+     複数行にわたる説明が可能です */
+  "address": {
+    "city": "東京", // 都市名
+    "district": "渋谷区" // 区/郡情報
+  },
+  
+  // 趣味リスト（配列）
+  "hobbies": [
+    "読書",        // 本を読む
+    "映画鑑賞",    // 映画を見る
+    "コーディング"  // プログラミング
+  ],
+  
+  "active": true, // アクティブ状態
+  
+  // メタデータ
+  "metadata": {
+    "createdAt": "2025-07-15T12:00:00Z",    // 作成日時
+    "lastModified": "2025-07-15T12:30:00Z"  // 最終更新日時
+  }
+}`,
+                'zh-CN': `{
+  // 用户基本信息
+  "name": "张三",
+  "age": 30,
+  
+  /* 地址信息 - 多行注释
+     可以进行多行描述 */
+  "address": {
+    "city": "北京", // 城市名
+    "district": "朝阳区" // 区/县信息
+  },
+  
+  // 爱好列表（数组）
+  "hobbies": [
+    "阅读",     // 读书
+    "看电影",   // 看电影
+    "编程"      // 编程
+  ],
+  
+  "active": true, // 活跃状态
+  
+  // 元数据
+  "metadata": {
+    "createdAt": "2025-07-15T12:00:00Z",    // 创建时间
+    "lastModified": "2025-07-15T12:30:00Z"  // 最后修改时间
+  }
+}`
+            };
+            
+            const sample = samples[currentLanguage] || samples['en'];
+            inputEditor.setValue(sample);
+            inputEditor.focus();
+        }
+
+        // Clear input
+        function clearInput() {
+            clearErrorHighlight();
+            inputEditor.setValue('');
+            inputEditor.focus();
+        }
+
+        // Toggle theme
+        function toggleTheme() {
+            isDarkMode = !isDarkMode;
+            document.body.classList.toggle('dark', isDarkMode);
+            document.getElementById('theme-icon').textContent = isDarkMode ? '☀️' : '🌙';
+            applyEditorTheme();
+        }
+
+        // Apply editor theme
+        function applyEditorTheme() {
+            const theme = isDarkMode ? 'material-darker' : 'default';
+            
+            if (inputEditor) {
+                inputEditor.setOption('theme', theme);
+                inputEditor.refresh();
+            }
+            if (outputEditor) {
+                outputEditor.setOption('theme', theme);
+                outputEditor.refresh();
+            }
+        }
+
+        // Set active tab (for future expansion)
+        function setActiveTab(tab) {
+            // Currently only JSON tab is active
+            console.log('Active tab:', tab);
+        }
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if CodeMirror is loaded
+            if (typeof CodeMirror === 'undefined') {
+                alert('Error loading code editor. Please refresh the page.');
+                return;
+            }
+            
+            // Load language preference
+            loadLanguagePreference();
+            
+            // Initialize editors
+            initializeEditors();
+            
+            // Update UI with current language
+            updateUI();
+            
+            // Auto-focus input editor
+            setTimeout(() => {
+                if (inputEditor) {
+                    inputEditor.focus();
+                }
+            }, 100);
+        });
+    </script>
+</body>
+</html>
