@@ -437,6 +437,316 @@
             color: #9ca3af;
         }
 
+        /* Guide and Tutorial Sections */
+        .guide-section, .tutorial-section {
+            margin: 3rem 0;
+            padding: 2rem 0;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+        }
+
+        .dark .section-title {
+            color: #f9fafb;
+        }
+
+        .section-subtitle {
+            color: #6b7280;
+            font-size: 1.125rem;
+        }
+
+        .dark .section-subtitle {
+            color: #9ca3af;
+        }
+
+        /* Guide Cards */
+        .guide-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .guide-card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.75rem;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .guide-card:hover {
+            border-color: #3b82f6;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .dark .guide-card {
+            background: #1f2937;
+            border-color: #374151;
+        }
+
+        .dark .guide-card:hover {
+            border-color: #3b82f6;
+        }
+
+        .guide-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+
+        .guide-card-header h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin: 0;
+        }
+
+        .dark .guide-card-header h3 {
+            color: #f9fafb;
+        }
+
+        .expand-icon {
+            color: #6b7280;
+            font-size: 0.875rem;
+            transition: transform 0.3s ease;
+        }
+
+        .guide-card.expanded .expand-icon {
+            transform: rotate(180deg);
+        }
+
+        .guide-card-desc {
+            color: #6b7280;
+            font-size: 0.875rem;
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        .dark .guide-card-desc {
+            color: #9ca3af;
+        }
+
+        .guide-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .guide-content.show {
+            max-height: 1000px;
+        }
+
+        .content-example, .mistake-example {
+            margin-bottom: 1.5rem;
+        }
+
+        .content-example h4, .mistake-example h4 {
+            color: #374151;
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .dark .content-example h4, .dark .mistake-example h4 {
+            color: #d1d5db;
+        }
+
+        .content-example pre, .mistake-example pre {
+            background: #f3f4f6;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            overflow-x: auto;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.875rem;
+            line-height: 1.5;
+        }
+
+        .dark .content-example pre, .dark .mistake-example pre {
+            background: #374151;
+            border-color: #4b5563;
+            color: #f9fafb;
+        }
+
+        .tips-list ul {
+            margin: 0;
+            padding-left: 1.5rem;
+        }
+
+        .tips-list li {
+            color: #4b5563;
+            margin-bottom: 0.5rem;
+            line-height: 1.5;
+        }
+
+        .dark .tips-list li {
+            color: #d1d5db;
+        }
+
+        /* Tutorial Cards */
+        .tutorial-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+
+        .tutorial-card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.75rem;
+            padding: 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .tutorial-card:hover {
+            border-color: #3b82f6;
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.15);
+            transform: translateY(-4px);
+        }
+
+        .dark .tutorial-card {
+            background: #1f2937;
+            border-color: #374151;
+        }
+
+        .tutorial-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .tutorial-card h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 0.75rem;
+        }
+
+        .dark .tutorial-card h3 {
+            color: #f9fafb;
+        }
+
+        .tutorial-card p {
+            color: #6b7280;
+            font-size: 0.875rem;
+            line-height: 1.5;
+            margin-bottom: 1.5rem;
+        }
+
+        .dark .tutorial-card p {
+            color: #9ca3af;
+        }
+
+        .tutorial-example pre {
+            background: #f3f4f6;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.5rem;
+            padding: 1rem;
+            text-align: left;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.8rem;
+            line-height: 1.4;
+            overflow-x: auto;
+        }
+
+        .dark .tutorial-example pre {
+            background: #374151;
+            border-color: #4b5563;
+            color: #f9fafb;
+        }
+
+        .feature-list ul, .shortcuts-list ul {
+            text-align: left;
+            margin: 0;
+            padding-left: 1.5rem;
+        }
+
+        .feature-list li, .shortcuts-list li {
+            color: #4b5563;
+            margin-bottom: 0.5rem;
+            line-height: 1.5;
+        }
+
+        .dark .feature-list li, .dark .shortcuts-list li {
+            color: #d1d5db;
+        }
+
+        .shortcuts-list kbd {
+            background: #f3f4f6;
+            border: 1px solid #d1d5db;
+            border-radius: 0.25rem;
+            padding: 0.125rem 0.375rem;
+            font-family: inherit;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .dark .shortcuts-list kbd {
+            background: #374151;
+            border-color: #4b5563;
+            color: #f9fafb;
+        }
+
+        .theme-preview {
+            margin-top: 1rem;
+        }
+
+        .theme-demo {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+        }
+
+        .theme-sample {
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+        }
+
+        .theme-sample.dark {
+            background: #1f2937;
+            color: #f9fafb;
+            border: 1px solid #374151;
+        }
+
+        .theme-sample.light {
+            background: #f9fafb;
+            color: #1f2937;
+            border: 1px solid #e5e7eb;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .guide-grid, .tutorial-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .section-title {
+                font-size: 1.75rem;
+            }
+            
+            .guide-card, .tutorial-card {
+                padding: 1.25rem;
+            }
+        }
+
         .copied-badge {
             position: absolute;
             top: 0.5rem;
@@ -540,6 +850,186 @@
                 </div>
             </div>
         </div>
+
+        <!-- JSON Guide Section -->
+        <section class="guide-section">
+            <div class="section-header">
+                <h2 class="section-title" data-i18n="jsonGuideTitle">Complete JSON Mastery Guide</h2>
+                <p class="section-subtitle">Master JSON with comprehensive guides and practical examples</p>
+            </div>
+            
+            <div class="guide-grid">
+                <div class="guide-card" onclick="toggleGuideContent('basics')">
+                    <div class="guide-card-header">
+                        <h3 data-i18n="jsonBasicsTitle">JSON Basics</h3>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <p class="guide-card-desc" data-i18n="jsonBasicsDesc">Learn JSON fundamentals, syntax, and best practices for proper structure</p>
+                    <div class="guide-content" id="basics-content">
+                        <div class="content-example">
+                            <h4>Basic JSON Structure:</h4>
+                            <pre><code>{
+  "string": "text value",
+  "number": 42,
+  "boolean": true,
+  "null": null,
+  "array": [1, 2, 3],
+  "object": {
+    "nested": "value"
+  }
+}</code></pre>
+                        </div>
+                        <div class="tips-list">
+                            <h4>Key Rules:</h4>
+                            <ul>
+                                <li>Always use double quotes for strings</li>
+                                <li>No trailing commas allowed</li>
+                                <li>Property names must be strings</li>
+                                <li>Values can be: string, number, boolean, null, array, object</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="guide-card" onclick="toggleGuideContent('examples')">
+                    <div class="guide-card-header">
+                        <h3 data-i18n="examplesTitle">Real-world Examples</h3>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <p class="guide-card-desc" data-i18n="examplesDesc">API responses, config files, complex data structures and more practical examples</p>
+                    <div class="guide-content" id="examples-content">
+                        <div class="content-example">
+                            <h4>API Response Example:</h4>
+                            <pre><code>{
+  "status": "success",
+  "data": {
+    "users": [
+      {
+        "id": 1,
+        "name": "John Doe",
+        "email": "john@example.com",
+        "active": true
+      }
+    ]
+  },
+  "pagination": {
+    "page": 1,
+    "total": 100
+  }
+}</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="guide-card" onclick="toggleGuideContent('mistakes')">
+                    <div class="guide-card-header">
+                        <h3 data-i18n="commonMistakesTitle">Common Mistakes</h3>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <p class="guide-card-desc" data-i18n="commonMistakesDesc">Frequent JSON errors developers make and how to avoid them</p>
+                    <div class="guide-content" id="mistakes-content">
+                        <div class="mistake-example">
+                            <h4>❌ Trailing Commas:</h4>
+                            <pre><code>{
+  "name": "John",
+  "age": 30, // ← This comma causes error
+}</code></pre>
+                            <h4>✅ Correct Version:</h4>
+                            <pre><code>{
+  "name": "John",
+  "age": 30
+}</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="guide-card" onclick="toggleGuideContent('performance')">
+                    <div class="guide-card-header">
+                        <h3 data-i18n="performanceTipsTitle">Performance Tips</h3>
+                        <span class="expand-icon">▼</span>
+                    </div>
+                    <p class="guide-card-desc" data-i18n="performanceTipsDesc">Optimize JSON parsing speed and design memory-efficient structures</p>
+                    <div class="guide-content" id="performance-content">
+                        <div class="tips-list">
+                            <h4>Optimization Tips:</h4>
+                            <ul>
+                                <li>Keep object keys short and consistent</li>
+                                <li>Avoid deep nesting (max 3-4 levels)</li>
+                                <li>Use arrays for lists, objects for dictionaries</li>
+                                <li>Consider data compression for large files</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tutorial Section -->
+        <section class="tutorial-section">
+            <div class="section-header">
+                <h2 class="section-title" data-i18n="tutorialTitle">How to Use QuickDevKit</h2>
+                <p class="section-subtitle">Maximize your productivity with these powerful features</p>
+            </div>
+            
+            <div class="tutorial-grid">
+                <div class="tutorial-card">
+                    <div class="tutorial-icon">💬</div>
+                    <h3 data-i18n="commentsFeatureTitle">Comment Support</h3>
+                    <p data-i18n="commentsFeatureDesc">Use // single-line and /* multi-line */ comments freely in your JSON</p>
+                    <div class="tutorial-example">
+                        <pre><code>{
+  // User configuration
+  "user": {
+    "name": "Developer", // Full name
+    /* Contact information
+       Can span multiple lines */
+    "email": "dev@example.com"
+  }
+}</code></pre>
+                    </div>
+                </div>
+
+                <div class="tutorial-card">
+                    <div class="tutorial-icon">🌍</div>
+                    <h3 data-i18n="languageFeatureTitle">Auto Language Detection</h3>
+                    <p data-i18n="languageFeatureDesc">Automatically detects optimal language from browser, region, and timezone</p>
+                    <div class="feature-list">
+                        <ul>
+                            <li>Browser language preferences</li>
+                            <li>Geographic timezone detection</li>
+                            <li>Currency and formatting analysis</li>
+                            <li>Intelligent fallback to English</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="tutorial-card">
+                    <div class="tutorial-icon">⚡</div>
+                    <h3 data-i18n="shortcutsTitle">Useful Shortcuts</h3>
+                    <p data-i18n="shortcutsDesc">Tab indentation, Ctrl+A select all, and more efficient editing features</p>
+                    <div class="shortcuts-list">
+                        <ul>
+                            <li><kbd>Tab</kbd> - Auto indentation</li>
+                            <li><kbd>Ctrl+A</kbd> - Select all</li>
+                            <li><kbd>Ctrl+C</kbd> - Copy text</li>
+                            <li><kbd>Ctrl+V</kbd> - Paste text</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="tutorial-card">
+                    <div class="tutorial-icon">🎨</div>
+                    <h3 data-i18n="darkModeTitle">Dark Mode</h3>
+                    <p data-i18n="darkModeDesc">Eye-friendly dark theme optimized for long development sessions</p>
+                    <div class="theme-preview">
+                        <div class="theme-demo">
+                            <div class="theme-sample dark">Dark Theme</div>
+                            <div class="theme-sample light">Light Theme</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
 
     <!-- Footer -->
@@ -592,7 +1082,28 @@
                 
                 // Footer
                 footerText1: '© 2025 QuickDevKit. 개발자를 위한 빠른 도구 모음집',
-                footerText2: 'JSON 포맷터, 검증기 및 더 많은 도구들'
+                footerText2: 'JSON 포맷터, 검증기 및 더 많은 도구들',
+                
+                // Guide sections
+                jsonGuideTitle: 'JSON 완전 정복 가이드',
+                jsonBasicsTitle: 'JSON 기본 문법',
+                jsonBasicsDesc: 'JSON의 기본 구조와 문법을 이해하고 올바른 작성법을 배워보세요',
+                examplesTitle: '실전 예제 모음',
+                examplesDesc: 'API 응답, 설정 파일, 복잡한 데이터 구조 등 다양한 실전 예제',
+                commonMistakesTitle: '자주하는 실수',
+                commonMistakesDesc: '개발자들이 자주 범하는 JSON 실수와 해결 방법',
+                performanceTipsTitle: '성능 최적화 팁',
+                performanceTipsDesc: 'JSON 파싱 속도 향상과 메모리 효율적인 구조 설계법',
+                
+                tutorialTitle: 'QuickDevKit 활용법',
+                commentsFeatureTitle: '💬 주석 지원 사용법',
+                commentsFeatureDesc: '// 한줄 주석과 /* 여러줄 주석 */을 자유롭게 사용하세요',
+                languageFeatureTitle: '🌍 자동 언어 감지',
+                languageFeatureDesc: '브라우저 언어, 지역, 시간대를 분석하여 최적 언어로 자동 설정',
+                shortcutsTitle: '⚡ 유용한 단축키',
+                shortcutsDesc: 'Tab키 들여쓰기, Ctrl+A 전체선택 등 효율적인 편집 기능',
+                darkModeTitle: '🎨 다크모드 활용',
+                darkModeDesc: '눈의 피로를 줄이는 다크 테마로 장시간 개발 작업에 최적화'
             },
             
             en: {
@@ -628,7 +1139,28 @@
                 
                 // Footer
                 footerText1: '© 2025 QuickDevKit. Lightning fast tools for developers',
-                footerText2: 'JSON formatter, validator and more developer tools'
+                footerText2: 'JSON formatter, validator and more developer tools',
+                
+                // Guide sections
+                jsonGuideTitle: 'Complete JSON Mastery Guide',
+                jsonBasicsTitle: 'JSON Basics',
+                jsonBasicsDesc: 'Learn JSON fundamentals, syntax, and best practices for proper structure',
+                examplesTitle: 'Real-world Examples',
+                examplesDesc: 'API responses, config files, complex data structures and more practical examples',
+                commonMistakesTitle: 'Common Mistakes',
+                commonMistakesDesc: 'Frequent JSON errors developers make and how to avoid them',
+                performanceTipsTitle: 'Performance Tips',
+                performanceTipsDesc: 'Optimize JSON parsing speed and design memory-efficient structures',
+                
+                tutorialTitle: 'How to Use QuickDevKit',
+                commentsFeatureTitle: '💬 Comment Support',
+                commentsFeatureDesc: 'Use // single-line and /* multi-line */ comments freely in your JSON',
+                languageFeatureTitle: '🌍 Auto Language Detection',
+                languageFeatureDesc: 'Automatically detects optimal language from browser, region, and timezone',
+                shortcutsTitle: '⚡ Useful Shortcuts',
+                shortcutsDesc: 'Tab indentation, Ctrl+A select all, and more efficient editing features',
+                darkModeTitle: '🎨 Dark Mode',
+                darkModeDesc: 'Eye-friendly dark theme optimized for long development sessions'
             },
             
             ja: {
@@ -664,7 +1196,28 @@
                 
                 // Footer
                 footerText1: '© 2025 QuickDevKit. 開発者のための高速ツール集',
-                footerText2: 'JSONフォーマッター、バリデーター、その他の開発者ツール'
+                footerText2: 'JSONフォーマッター、バリデーター、その他の開発者ツール',
+                
+                // Guide sections
+                jsonGuideTitle: 'JSON完全マスターガイド',
+                jsonBasicsTitle: 'JSON基礎文法',
+                jsonBasicsDesc: 'JSONの基本構造と文法を理解し、正しい書き方を学びましょう',
+                examplesTitle: '実戦例集',
+                examplesDesc: 'API応答、設定ファイル、複雑なデータ構造など様々な実戦例',
+                commonMistakesTitle: 'よくある間違い',
+                commonMistakesDesc: '開発者がよく犯すJSONのミスと解決方法',
+                performanceTipsTitle: 'パフォーマンス最適化',
+                performanceTipsDesc: 'JSONパースの高速化とメモリ効率的な構造設計法',
+                
+                tutorialTitle: 'QuickDevKit活用法',
+                commentsFeatureTitle: '💬 コメント機能',
+                commentsFeatureDesc: '// 単行コメントと /* 複数行コメント */ を自由に使用可能',
+                languageFeatureTitle: '🌍 自動言語検出',
+                languageFeatureDesc: 'ブラウザ言語、地域、タイムゾーンを分析して最適言語に自動設定',
+                shortcutsTitle: '⚡ 便利なショートカット',
+                shortcutsDesc: 'Tabキーインデント、Ctrl+A全選択など効率的な編集機能',
+                darkModeTitle: '🎨 ダークモード',
+                darkModeDesc: '目の疲労を軽減するダークテーマで長時間の開発作業に最適化'
             },
             
             'zh-CN': {
@@ -700,7 +1253,28 @@
                 
                 // Footer
                 footerText1: '© 2025 QuickDevKit. 开发者的快速工具集',
-                footerText2: 'JSON格式化器、验证器及更多开发者工具'
+                footerText2: 'JSON格式化器、验证器及更多开发者工具',
+                
+                // Guide sections
+                jsonGuideTitle: 'JSON完全掌握指南',
+                jsonBasicsTitle: 'JSON基础语法',
+                jsonBasicsDesc: '了解JSON的基本结构和语法，学习正确的编写方法',
+                examplesTitle: '实战示例集合',
+                examplesDesc: 'API响应、配置文件、复杂数据结构等各种实战示例',
+                commonMistakesTitle: '常见错误',
+                commonMistakesDesc: '开发者经常犯的JSON错误和解决方法',
+                performanceTipsTitle: '性能优化技巧',
+                performanceTipsDesc: 'JSON解析速度提升和内存高效结构设计方法',
+                
+                tutorialTitle: 'QuickDevKit使用方法',
+                commentsFeatureTitle: '💬 注释支持',
+                commentsFeatureDesc: '可以自由使用 // 单行注释 和 /* 多行注释 */',
+                languageFeatureTitle: '🌍 自动语言检测',
+                languageFeatureDesc: '分析浏览器语言、地区、时区，自动设置为最优语言',
+                shortcutsTitle: '⚡ 实用快捷键',
+                shortcutsDesc: 'Tab键缩进、Ctrl+A全选等高效编辑功能',
+                darkModeTitle: '🎨 暗色模式',
+                darkModeDesc: '减少眼部疲劳的暗色主题，为长时间开发工作优化'
             }
         };
 
@@ -1366,6 +1940,27 @@
         function setActiveTab(tab) {
             // Currently only JSON tab is active
             console.log('Active tab:', tab);
+        }
+
+        // Toggle guide content
+        function toggleGuideContent(contentId) {
+            const content = document.getElementById(contentId + '-content');
+            const card = content.closest('.guide-card');
+            
+            if (content.classList.contains('show')) {
+                content.classList.remove('show');
+                card.classList.remove('expanded');
+            } else {
+                // Close all other guide contents first
+                document.querySelectorAll('.guide-content.show').forEach(el => {
+                    el.classList.remove('show');
+                    el.closest('.guide-card').classList.remove('expanded');
+                });
+                
+                // Open current content
+                content.classList.add('show');
+                card.classList.add('expanded');
+            }
         }
 
         // Initialize the application
