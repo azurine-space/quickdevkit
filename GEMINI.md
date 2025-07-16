@@ -1,5 +1,7 @@
-# QuickDevKit - Lightning Fast Developer Tools
-# GEMINI.md - Project Configuration for Gemini
+--- Context from: ../../../../.gemini/GEMINI.md ---
+## Gemini Added Memories
+- In the svg-converter.html project, the correct method for converting SVG lines or polylines with arrowheads (marker-start/marker-end) to Draw.io is to use a 'two-cell' approach. This involves creating one mxCell for the line itself (without arrow styles) and a second, separate mxCell for the arrowheads. The second cell is an invisible edge that only carries the startArrow/endArrow styles, ensuring markers are rendered correctly in Draw.io.
+--- End of Context from: ../../../../.gemini/GEMINI.md ---
 
 ## Project
 
