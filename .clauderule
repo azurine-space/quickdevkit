@@ -1,0 +1,309 @@
+# QuickDevKit - Lightning Fast Developer Tools
+# .clauderule - Project Configuration for Claude Code
+
+project:
+  name: "QuickDevKit"
+  description: "Lightning fast JSON formatter, validator and developer tools collection with multilingual support"
+  version: "1.0.0"
+  domain: "quickdevkit.tools"
+  repository: "https://github.com/username/quickdevkit"
+  
+branding:
+  name: "QuickDevKit"
+  tagline: "Lightning Fast Developer Tools"
+  logo: "⚡" # Lightning bolt emphasizing speed
+  colors:
+    primary: "#3b82f6" # Blue - trust and professionalism
+    secondary: "#f59e0b" # Amber - energy and speed
+    accent: "#10b981" # Green - success states
+    dark: "#1f2937" # Dark theme primary
+    light: "#f9fafb" # Light theme primary
+
+tech_stack:
+  frontend: "HTML5 + Vanilla JavaScript + CSS3"
+  editor: "CodeMirror 5.65.16"
+  styling: "Custom CSS with Tailwind-inspired classes"
+  icons: "Unicode emoji + Lucide React icons"
+  monetization: "Google AdSense (ca-pub-2369255699430177)"
+  analytics: "Google Analytics (to be added)"
+  deployment: "GitHub Pages"
+  
+architecture:
+  type: "Single Page Application (SPA)"
+  structure: |
+    index.html (main application)
+    ├── <head> - Meta tags, AdSense, CodeMirror imports
+    ├── <header> - Navigation, language selector, theme toggle
+    ├── <main>
+    │   ├── JSON Editor Section (CodeMirror instances)
+    │   ├── JSON Guide Section (expandable cards)
+    │   └── Tutorial Section (feature showcase)
+    └── <footer> - Copyright, links
+
+features:
+  core:
+    - "Real-time JSON validation with precise error highlighting"
+    - "Smart formatting with proper indentation"
+    - "Comment support (// single-line and /* multi-line */)"
+    - "One-click copy and minify functions"
+    - "Sample data loading for quick testing"
+  
+  ui_ux:
+    - "Dark/Light mode toggle with system preference detection"
+    - "Responsive design for mobile and desktop"
+    - "Professional CodeMirror editor with syntax highlighting"
+    - "Smooth transitions and hover effects"
+    - "Expandable guide sections with animations"
+  
+  multilingual:
+    - "Auto-detection based on browser language, timezone, and locale"
+    - "4 supported languages: English (en), 한국어 (ko), 日本語 (ja), 中文 (zh-CN)"
+    - "Intelligent fallback to English for unsupported languages"
+    - "Localized samples and error messages"
+
+language_support:
+  detection_methods:
+    - "navigator.language and navigator.languages"
+    - "Intl.DateTimeFormat locale resolution"
+    - "Timezone-based region analysis (Asia/Seoul → ko, Asia/Tokyo → ja)"
+    - "Currency and number formatting patterns"
+  
+  translation_structure: |
+    translations = {
+      'language_code': {
+        // Header elements
+        devTools: 'Brand name',
+        jsonTool: 'JSON Tool tab name',
+        
+        // Core functionality
+        inputPlaceholder: 'Input editor placeholder',
+        outputPlaceholder: 'Output editor placeholder',
+        validJson: 'Success message',
+        syntaxError: 'Error message title',
+        
+        // Guide and tutorial content
+        jsonGuideTitle: 'Guide section title',
+        // ... comprehensive translation keys
+      }
+    }
+
+coding_conventions:
+  javascript:
+    - "Use camelCase for variables and functions"
+    - "Use const/let instead of var"
+    - "Prefer arrow functions for inline callbacks"
+    - "Add error handling for all async operations"
+    - "Use meaningful variable names (inputEditor, outputEditor)"
+    - "Add comments for complex logic sections"
+  
+  css:
+    - "Use BEM-inspired naming: .component-element--modifier"
+    - "Group related styles together"
+    - "Always include dark mode variants"
+    - "Use CSS custom properties for theme colors"
+    - "Follow mobile-first responsive design"
+    - "Transition animations should be 0.2s-0.3s ease"
+  
+  html:
+    - "Use semantic HTML5 elements"
+    - "Include data-i18n attributes for translatable text"
+    - "Maintain accessibility with proper ARIA labels"
+    - "Use meaningful class names and IDs"
+
+file_structure:
+  current: |
+    /
+    ├── index.html (main application file)
+    ├── README.md (project documentation)
+    ├── .clauderule (this file)
+    └── CNAME (GitHub Pages custom domain)
+  
+  planned_expansion: |
+    /
+    ├── index.html (JSON tools)
+    ├── html/
+    │   └── index.html (HTML formatter)
+    ├── css/
+    │   └── index.html (CSS formatter)
+    ├── base64/
+    │   └── index.html (Base64 encoder/decoder)
+    ├── assets/
+    │   ├── css/
+    │   ├── js/
+    │   └── images/
+    └── api/
+        └── endpoints for premium features
+
+development_guidelines:
+  new_features:
+    - "Always add multilingual support from the start"
+    - "Include both light and dark theme styles"
+    - "Test on mobile devices and different screen sizes"
+    - "Add loading states for async operations"
+    - "Include helpful error messages and user feedback"
+    - "Maintain consistent design patterns with existing features"
+  
+  performance:
+    - "Minimize dependencies (prefer vanilla JS over frameworks)"
+    - "Optimize for fast initial load time"
+    - "Use efficient DOM manipulation techniques"
+    - "Debounce user input for real-time validation"
+    - "Lazy load non-critical features"
+  
+  accessibility:
+    - "Support keyboard navigation"
+    - "Include proper ARIA labels and roles"
+    - "Maintain good color contrast ratios"
+    - "Provide alt text for all images"
+    - "Ensure functionality works without JavaScript (graceful degradation)"
+
+monetization:
+  current:
+    - "Google AdSense automatic ads (ca-pub-2369255699430177)"
+    - "Strategic ad placement in content sections"
+    - "User-friendly ad integration"
+  
+  future:
+    - "Premium features (ad-free experience)"
+    - "API access for developers"
+    - "Advanced tools and integrations"
+    - "Team collaboration features"
+
+expansion_roadmap:
+  phase_1: # Current
+    - "✅ JSON formatter with comment support"
+    - "✅ Multilingual interface (4 languages)"
+    - "✅ Dark/light theme"
+    - "✅ Google AdSense integration"
+    - "✅ Comprehensive guides and tutorials"
+  
+  phase_2: # Next 3 months
+    - "HTML formatter and beautifier"
+    - "CSS formatter and minifier"
+    - "Base64 encoder/decoder"
+    - "URL encoder/decoder"
+    - "Hash generators (MD5, SHA256)"
+  
+  phase_3: # Next 6 months
+    - "Regex tester and builder"
+    - "Color palette generator"
+    - "Lorem ipsum generator"
+    - "QR code generator"
+    - "Image optimization tools"
+  
+  phase_4: # Long-term
+    - "API endpoints for programmatic access"
+    - "User accounts and saved preferences"
+    - "Team collaboration features"
+    - "Advanced JSON schema validation"
+    - "Custom tool builder"
+
+seo_strategy:
+  target_keywords:
+    primary: ["json formatter", "json validator", "json beautifier"]
+    secondary: ["developer tools", "json online", "json parser", "quickdevkit"]
+    long_tail: ["json formatter with comments", "online json validator tool", "free json beautifier"]
+  
+  content_strategy:
+    - "Create comprehensive guides for each tool"
+    - "Include practical examples and use cases"
+    - "Maintain high-quality, original content"
+    - "Regular updates with new features and improvements"
+    - "Build backlinks through developer community engagement"
+
+deployment:
+  platform: "GitHub Pages"
+  domain: "quickdevkit.tools (custom domain via Namecheap)"
+  ssl: "Automatic via GitHub Pages (Let's Encrypt)"
+  cdn: "GitHub's global CDN"
+  
+  dns_settings: |
+    # Namecheap DNS Records:
+    Type: A, Host: @, Value: 185.199.108.153
+    Type: A, Host: @, Value: 185.199.109.153  
+    Type: A, Host: @, Value: 185.199.110.153
+    Type: A, Host: @, Value: 185.199.111.153
+    Type: CNAME, Host: www, Value: username.github.io.
+
+analytics_and_monitoring:
+  google_analytics: "GA4 tracking (to be implemented)"
+  google_search_console: "For SEO monitoring"
+  adsense_reports: "Revenue and performance tracking"
+  uptime_monitoring: "Service availability checks"
+
+collaboration_guidelines:
+  git_workflow:
+    - "Use feature branches for new development"
+    - "Create pull requests for all changes"
+    - "Include tests for new functionality"
+    - "Update documentation with feature changes"
+  
+  commit_messages:
+    format: "type(scope): description"
+    examples:
+      - "feat(json): add syntax highlighting for errors"
+      - "fix(i18n): correct Japanese translation keys"
+      - "docs(readme): update installation instructions"
+      - "style(css): improve dark mode contrast"
+
+testing_strategy:
+  manual_testing:
+    - "Test all features in both light and dark modes"
+    - "Verify functionality across all supported languages"
+    - "Check responsiveness on mobile and desktop"
+    - "Validate JSON parsing with various edge cases"
+  
+  cross_browser_testing:
+    - "Chrome/Chromium (primary target)"
+    - "Firefox"
+    - "Safari (macOS and iOS)"
+    - "Edge"
+    - "Mobile browsers (Chrome Mobile, Safari Mobile)"
+
+security_considerations:
+  client_side:
+    - "All JSON processing happens client-side (no server storage)"
+    - "No user data collection or storage"
+    - "CSP headers for XSS protection"
+    - "Sanitize all user input"
+  
+  privacy:
+    - "No tracking cookies beyond AdSense requirements"
+    - "No personal data collection"
+    - "Clear privacy policy (to be added)"
+    - "GDPR compliance for EU users"
+
+quality_assurance:
+  code_review_checklist:
+    - "✅ Multilingual support implemented"
+    - "✅ Dark/light theme styles included"
+    - "✅ Mobile responsiveness verified"
+    - "✅ Accessibility standards met"
+    - "✅ Performance impact assessed"
+    - "✅ Error handling implemented"
+    - "✅ User feedback provided"
+
+support_and_maintenance:
+  user_feedback:
+    - "GitHub Issues for bug reports and feature requests"
+    - "Social media monitoring for user mentions"
+    - "Analytics data for usage patterns"
+  
+  regular_maintenance:
+    - "Monthly dependency updates"
+    - "Quarterly feature additions"
+    - "Continuous SEO optimization"
+    - "Performance monitoring and optimization"
+
+# Instructions for Claude Code:
+# This project is a multilingual developer tools website focusing on JSON processing
+# with plans to expand to other developer utilities. When working on this project:
+# 
+# 1. Always maintain the existing architecture and coding patterns
+# 2. Include multilingual support for any new features
+# 3. Follow the established naming conventions and file structure
+# 4. Test new features across all supported languages and themes
+# 5. Prioritize performance and user experience in all implementations
+# 6. Maintain the professional, developer-focused branding and design
+# 7. Consider SEO impact of any content or structural changes
+# 8. Ensure all new code follows accessibility best practices

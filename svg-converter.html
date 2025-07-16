@@ -1,0 +1,2000 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SVG to Draw.io Converter - QuickDevKit</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: #f8fafc;
+            color: #1a202c;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 16px 0;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: #3b82f6;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .logo-text {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1a202c;
+        }
+
+        .breadcrumb {
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .header-controls {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-icon {
+            width: 36px;
+            height: 36px;
+            border: none;
+            background: none;
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
+
+        .btn-icon:hover {
+            background: #f1f5f9;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 60px 0;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 36px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .hero p {
+            font-size: 18px;
+            margin-bottom: 32px;
+            opacity: 0.9;
+        }
+
+        .features {
+            display: flex;
+            justify-content: center;
+            gap: 32px;
+            flex-wrap: wrap;
+        }
+
+        .feature {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        .feature-dot {
+            width: 8px;
+            height: 8px;
+            background: #4ade80;
+            border-radius: 50%;
+        }
+
+        /* Main Content */
+        .main {
+            padding: 40px 0;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 32px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e2e8f0;
+            padding: 24px;
+            height: fit-content;
+        }
+
+        .card h2 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card h2::before {
+            content: "📁";
+            font-size: 16px;
+        }
+
+        .card:nth-child(2) h2::before {
+            content: "⚙️";
+        }
+
+        .card:nth-child(3) h2::before {
+            content: "📥";
+        }
+
+        /* Upload Zone */
+        .upload-zone {
+            border: 2px dashed #cbd5e1;
+            border-radius: 8px;
+            padding: 40px 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 16px;
+        }
+
+        .upload-zone:hover {
+            border-color: #3b82f6;
+            background: #f0f9ff;
+        }
+
+        .upload-zone.drag-over {
+            border-color: #1d4ed8;
+            background: #dbeafe;
+        }
+
+        .upload-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .upload-text {
+            color: #64748b;
+            margin-bottom: 8px;
+        }
+
+        .upload-subtext {
+            color: #94a3b8;
+            font-size: 14px;
+            margin-bottom: 16px;
+        }
+
+        .btn-primary {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 14px;
+        }
+
+        .btn-primary:hover {
+            background: #2563eb;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: #f8fafc;
+            color: #475569;
+            border: 1px solid #e2e8f0;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 12px;
+        }
+
+        .btn-secondary:hover {
+            background: #f1f5f9;
+        }
+
+        .btn-secondary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .tip {
+            background: #eff6ff;
+            border: 1px solid #bfdbfe;
+            border-radius: 8px;
+            padding: 12px;
+            font-size: 14px;
+            color: #1e40af;
+        }
+
+        .kbd {
+            background: #e2e8f0;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        /* Settings */
+        .settings {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: #3b82f6;
+        }
+
+        .checkbox-group label {
+            font-size: 14px;
+            color: #374151;
+            cursor: pointer;
+        }
+
+        .select-group {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .select-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: #374151;
+        }
+
+        .select-group select {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #d1d5db;
+            border-radius: 6px;
+            font-size: 14px;
+            background: white;
+        }
+
+        /* File List */
+        .file-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .file-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .file-item:hover {
+            background: #f1f5f9;
+            border-color: #cbd5e1;
+        }
+
+        .file-item.selected {
+            background: #eff6ff;
+            border-color: #3b82f6;
+        }
+
+        .file-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .file-icon {
+            font-size: 20px;
+        }
+
+        .file-details h4 {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 2px;
+        }
+
+        .file-details p {
+            font-size: 12px;
+            color: #64748b;
+        }
+
+        .file-status {
+            font-size: 12px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+
+        .status-ready {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-converting {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .status-complete {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        /* Convert Button */
+        .convert-btn {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .convert-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* Preview */
+        .preview {
+            border: 2px dashed #e2e8f0;
+            border-radius: 8px;
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #64748b;
+            text-align: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .preview.has-content {
+            border: 2px solid #3b82f6;
+            background: #f8fafc;
+        }
+
+        .preview-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .preview-icon {
+            font-size: 48px;
+            opacity: 0.5;
+        }
+
+        .preview-svg {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .preview-controls {
+            position: absolute;
+            bottom: 8px;
+            left: 8px;
+            right: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        .preview-info {
+            color: #64748b;
+        }
+
+        .preview-nav {
+            display: flex;
+            gap: 4px;
+        }
+
+        .preview-nav button {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 2px 6px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        .preview-nav button:hover {
+            background: #2563eb;
+        }
+
+        .preview-nav button:disabled {
+            background: #cbd5e1;
+            cursor: not-allowed;
+        }
+
+        /* Results */
+        .results {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px;
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            border-radius: 8px;
+        }
+
+        .result-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .result-icon {
+            font-size: 20px;
+            color: #16a34a;
+        }
+
+        .result-details h4 {
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 2px;
+        }
+
+        .result-details p {
+            font-size: 12px;
+            color: #16a34a;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #64748b;
+        }
+
+        .empty-icon {
+            font-size: 48px;
+            margin-bottom: 12px;
+            opacity: 0.5;
+        }
+
+        /* File Content Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 20px;
+            border-radius: 12px;
+            width: 80%;
+            max-width: 800px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1a202c;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #64748b;
+        }
+
+        .close-btn:hover {
+            color: #1a202c;
+        }
+
+        .code-container {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+            position: relative;
+        }
+
+        .code-content {
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            line-height: 1.4;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            max-height: 300px;
+            overflow-y: auto;
+            color: #374151;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .copy-btn:hover {
+            background: #2563eb;
+        }
+
+        .copy-btn.success {
+            background: #16a34a;
+        }
+
+        .download-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+
+        /* Footer */
+        .footer {
+            background: #1f2937;
+            color: white;
+            padding: 32px 0;
+            text-align: center;
+            margin-top: 60px;
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .footer-logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .footer-logo-icon {
+            width: 24px;
+            height: 24px;
+            background: #3b82f6;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 24px;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a {
+            color: #9ca3af;
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.2s;
+        }
+
+        .footer-links a:hover {
+            color: white;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .hero h1 {
+                font-size: 28px;
+            }
+            
+            .hero p {
+                font-size: 16px;
+            }
+            
+            .features {
+                gap: 16px;
+            }
+            
+            .footer-content {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        /* Animations */
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .spinning {
+            animation: spin 1s linear infinite;
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #16a34a;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
+        }
+
+        .toast.error {
+            background: #dc2626;
+        }
+
+        .toast.warning {
+            background: #d97706;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideOut {
+            from {
+                transform: translateX(0);
+                opacity: 1;
+            }
+            to {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-icon">Q</div>
+                    <div class="logo-text">QuickDevKit</div>
+                    <div class="breadcrumb">→ SVG to Draw.io Converter</div>
+                </div>
+                <div class="header-controls">
+                    <button class="btn-icon" title="Dark Mode">🌙</button>
+                    <button class="btn-icon" title="Settings">⚙️</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>SVG to Draw.io Converter</h1>
+            <p>Transform your SVG files into editable Draw.io diagrams with perfect precision</p>
+            <div class="features">
+                <div class="feature">
+                    <div class="feature-dot"></div>
+                    <span>Batch Processing</span>
+                </div>
+                <div class="feature">
+                    <div class="feature-dot"></div>
+                    <span>Editable Text</span>
+                </div>
+                <div class="feature">
+                    <div class="feature-dot"></div>
+                    <span>Connection Preservation</span>
+                </div>
+                <div class="feature">
+                    <div class="feature-dot"></div>
+                    <span>Color Accuracy</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="main">
+        <div class="container">
+            <div class="grid">
+                <!-- Upload Panel -->
+                <div class="card">
+                    <h2>Upload SVG Files</h2>
+                    
+                    <div id="uploadZone" class="upload-zone">
+                        <div class="upload-icon">📤</div>
+                        <div class="upload-text">Drag & drop SVG files here</div>
+                        <div class="upload-subtext">or click to browse</div>
+                        <button class="btn-primary" onclick="document.getElementById('fileInput').click()">
+                            Choose Files
+                        </button>
+                        <input type="file" id="fileInput" class="hidden" multiple accept=".svg">
+                    </div>
+
+                    <div class="tip">
+                        <strong>Pro tip:</strong> Use <span class="kbd">Ctrl+V</span> to paste SVG code directly
+                    </div>
+
+                    <div class="tip" style="margin-top: 12px; background: #fff3cd; border-color: #ffeaa7; color: #856404;">
+                        <strong>🔧 Debug Mode:</strong> All lines now have arrows! Check browser console (F12) for detailed conversion logs.
+                    </div>
+
+                    <div class="settings">
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="textEdit" checked>
+                            <label for="textEdit">Preserve text editability</label>
+                        </div>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="connections" checked>
+                            <label for="connections">Maintain connection relationships</label>
+                        </div>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="groups" checked>
+                            <label for="groups">Keep group structures</label>
+                        </div>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="colors" checked>
+                            <label for="colors">Preserve color accuracy</label>
+                        </div>
+                        
+                        <div class="select-group">
+                            <label for="format">Output Format</label>
+                            <select id="format">
+                                <option value="drawio">Draw.io (.drawio)</option>
+                                <option value="xml">XML (.xml)</n>
+                                <option value="library">Library (.xml)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Process Panel -->
+                <div class="card">
+                    <h2>Preview & Navigation</h2>
+                    
+                    <div id="fileList" class="file-list">
+                        <!-- Files will be added here -->
+                    </div>
+                    
+                    <button id="convertBtn" class="btn-primary convert-btn" onclick="startConversion()">
+                        ▶️ Start Conversion
+                    </button>
+
+                    <div id="previewArea" class="preview">
+                        <div class="preview-content">
+                            <div class="preview-icon">👁️</div>
+                            <div>Upload SVG files to see preview</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Results Panel -->
+                <div class="card">
+                    <h2>Download Results</h2>
+                    
+                    <div id="resultsList" class="results">
+                        <div class="empty-state">
+                            <div class="empty-icon">📄</div>
+                            <div>Converted files will appear here</div>
+                        </div>
+                    </div>
+                    
+                    <button id="downloadAllBtn" class="btn-secondary convert-btn" disabled>
+                        👁️ View All Files
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <div class="footer-logo-icon">Q</div>
+                    <span>QuickDevKit</span>
+                </div>
+                <div class="footer-links">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                    <a href="#">Support</a>
+                    <a href="#">API Docs</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- File Content Modal -->
+    <div id="fileModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitle">File Content</h3>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="code-container">
+                <button class="copy-btn" id="copyBtn" onclick="copyContent()">📋 Copy</button>
+                <pre class="code-content" id="fileContent"></pre>
+            </div>
+            <div class="download-actions">
+                <button class="btn-secondary" onclick="copyContent()">📋 Copy All</button>
+                <button class="btn-secondary" onclick="downloadAsFile()">💾 Save as File</button>
+                <button class="btn-primary" onclick="openInNewTab()">🔗 Open in New Tab</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let uploadedFiles = [];
+        let convertedFiles = [];
+        let currentPreviewIndex = 0;
+
+        // Upload zone functionality
+        const uploadZone = document.getElementById('uploadZone');
+        const fileInput = document.getElementById('fileInput');
+        const fileList = document.getElementById('fileList');
+        const convertBtn = document.getElementById('convertBtn');
+        const resultsList = document.getElementById('resultsList');
+        const downloadAllBtn = document.getElementById('downloadAllBtn');
+        const previewArea = document.getElementById('previewArea');
+
+        // Toast notification function
+        function showToast(message, type = 'success') {
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => {
+                    document.body.removeChild(toast);
+                }, 300);
+            }, 3000);
+        }
+
+        // Preview functionality
+        function updatePreview() {
+            // Update selected file visual state
+            const fileItems = fileList.querySelectorAll('.file-item');
+            fileItems.forEach((item, index) => {
+                if (index === currentPreviewIndex) {
+                    item.classList.add('selected');
+                } else {
+                    item.classList.remove('selected');
+                }
+            });
+
+            if (uploadedFiles.length === 0) {
+                previewArea.innerHTML = `
+                    <div class="preview-content">
+                        <div class="preview-icon">👁️</div>
+                        <div>Upload SVG files to see preview</div>
+                    </div>
+                `;
+                previewArea.className = 'preview';
+                return;
+            }
+
+            const file = uploadedFiles[currentPreviewIndex];
+            const reader = new FileReader();
+            
+            reader.onload = function(e) {
+                const svgContent = e.target.result;
+                previewArea.innerHTML = `
+                    <div class="preview-svg" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;">
+                        ${svgContent}
+                    </div>
+                    <div class="preview-controls">
+                        <div class="preview-info">
+                            ${file.name} (${Math.round(file.size / 1024)} KB)
+                        </div>
+                        <div class="preview-nav">
+                            <button onclick="prevPreview()" ${currentPreviewIndex === 0 ? 'disabled' : ''}>◀</button>
+                            <span>${currentPreviewIndex + 1}/${uploadedFiles.length}</span>
+                            <button onclick="nextPreview()" ${currentPreviewIndex === uploadedFiles.length - 1 ? 'disabled' : ''}>▶</button>
+                        </div>
+                    </div>
+                `;
+                previewArea.className = 'preview has-content';
+                
+                // Scale SVG to fit preview
+                const svg = previewArea.querySelector('svg');
+                if (svg) {
+                    svg.style.maxWidth = '100%';
+                    svg.style.maxHeight = '180px';
+                    svg.style.width = 'auto';
+                    svg.style.height = 'auto';
+                }
+            };
+            
+            reader.onerror = function() {
+                previewArea.innerHTML = `
+                    <div class="preview-content">
+                        <div class="preview-icon">❌</div>
+                        <div>Error loading ${file.name}</div>
+                    </div>
+                `;
+                previewArea.className = 'preview';
+            };
+            
+            reader.readAsText(file);
+        }
+
+        // Preview navigation
+        function prevPreview() {
+            if (currentPreviewIndex > 0) {
+                currentPreviewIndex--;
+                updatePreview();
+            }
+        }
+
+        function nextPreview() {
+            if (currentPreviewIndex < uploadedFiles.length - 1) {
+                currentPreviewIndex++;
+                updatePreview();
+            }
+        }
+
+        // Click to upload
+        uploadZone.addEventListener('click', () => {
+            fileInput.click();
+        });
+
+        // Drag and drop
+        uploadZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadZone.classList.add('drag-over');
+        });
+
+        uploadZone.addEventListener('dragleave', () => {
+            uploadZone.classList.remove('drag-over');
+        });
+
+        uploadZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadZone.classList.remove('drag-over');
+            handleFiles(e.dataTransfer.files);
+        });
+
+        // File input change
+        fileInput.addEventListener('change', (e) => {
+            handleFiles(e.target.files);
+        });
+        
+        // Paste from clipboard
+        document.addEventListener('paste', (e) => {
+            handleFiles(e.clipboardData.files);
+            
+            const text = e.clipboardData.getData('text/plain');
+            if (text && text.trim().startsWith('<svg')) {
+                const file = new File([text], "pasted.svg", {type: "image/svg+xml"});
+                handleFiles([file]);
+            }
+        });
+
+        // Handle uploaded files
+        function handleFiles(files) {
+            let addedCount = 0;
+            for (let file of files) {
+                if (file.type === 'image/svg+xml' || file.name.endsWith('.svg')) {
+                    // Check for duplicates
+                    if (!uploadedFiles.some(f => f.name === file.name && f.size === file.size)) {
+                        uploadedFiles.push(file);
+                        addFileToList(file);
+                        addedCount++;
+                    }
+                }
+            }
+            
+            if (addedCount > 0) {
+                showToast(`${addedCount} SVG file(s) uploaded successfully!`);
+                currentPreviewIndex = uploadedFiles.length - addedCount;
+                updatePreview();
+                updateConvertButtonState();
+            } else if (files.length > 0) {
+                showToast('Please upload valid SVG files only.', 'warning');
+            }
+        }
+
+        // Add file to list
+        function addFileToList(file) {
+            const fileItem = document.createElement('div');
+            fileItem.className = 'file-item';
+            fileItem.dataset.filename = file.name;
+            fileItem.innerHTML = `
+                <div class="file-info">
+                    <div class="file-icon">📄</div>
+                    <div class="file-details">
+                        <h4>${file.name}</h4>
+                        <p>${Math.round(file.size / 1024)} KB</p>
+                    </div>
+                </div>
+                <div class="file-status status-ready">Ready</div>
+            `;
+            
+            fileItem.addEventListener('click', () => {
+                const index = uploadedFiles.findIndex(f => f.name === file.name);
+                if (index !== -1) {
+                    currentPreviewIndex = index;
+                    updatePreview();
+                }
+            });
+            
+            fileList.appendChild(fileItem);
+        }
+        
+        function updateConvertButtonState() {
+            convertBtn.disabled = uploadedFiles.length === 0;
+        }
+
+        // Start conversion
+        async function startConversion() {
+            if (uploadedFiles.length === 0) {
+                showToast('Please upload some SVG files first!', 'warning');
+                return;
+            }
+
+            convertBtn.disabled = true;
+            convertBtn.innerHTML = '⏳ Converting...';
+            convertedFiles = [];
+            resultsList.innerHTML = '<div class="empty-state"><div class="empty-icon">📄</div><div>Converted files will appear here</div></div>';
+            downloadAllBtn.disabled = true;
+
+            const fileItems = fileList.querySelectorAll('.file-item');
+            
+            for (let i = 0; i < uploadedFiles.length; i++) {
+                const file = uploadedFiles[i];
+                const fileItem = fileList.querySelector(`.file-item[data-filename="${file.name}"]`);
+                const status = fileItem.querySelector('.file-status');
+                
+                status.textContent = 'Converting...';
+                status.className = 'file-status status-converting';
+                
+                try {
+                    await processFile(file);
+                    status.textContent = 'Complete';
+                    status.className = 'file-status status-complete';
+                } catch (error) {
+                    console.error(`❌ Error processing ${file.name}:`, error);
+                    status.textContent = 'Error';
+                    status.className = 'file-status status-error';
+                    showToast(`Error converting ${file.name}`, 'error');
+                }
+            }
+
+            finishConversion();
+        }
+
+        // Process a single file
+        function processFile(file) {
+            return new Promise((resolve, reject) => {
+                console.log(`\n🔄 Processing file: ${file.name}`);
+                const reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    try {
+                        const svgContent = e.target.result;
+                        console.log(`📄 SVG content loaded (${svgContent.length} characters)`);
+                        
+                        const drawioContent = convertSvgToDrawio(svgContent, file.name);
+                        console.log(`✅ Conversion complete for ${file.name}`);
+                        console.log(`📊 Generated Draw.io XML (${drawioContent.length} characters)`);
+                        
+                        const convertedFile = {
+                            original: file.name,
+                            converted: file.name.replace(/\.svg$/i, '.drawio'),
+                            size: `${Math.round(drawioContent.length / 1024)} KB`,
+                            data: drawioContent
+                        };
+                        
+                        if (convertedFiles.length === 0) {
+                            resultsList.innerHTML = ''; // Clear empty state
+                        }
+                        convertedFiles.push(convertedFile);
+                        addResultToList(convertedFile);
+                        
+                        resolve();
+                    } catch (error) {
+                        reject(error);
+                    }
+                };
+                
+                reader.onerror = function() {
+                    reject(new Error(`FileReader error for ${file.name}`));
+                };
+                
+                reader.readAsText(file);
+            });
+        }
+
+        // Finish conversion process
+        function finishConversion() {
+            convertBtn.innerHTML = '✅ Conversion Complete';
+            convertBtn.style.background = '#16a34a';
+            downloadAllBtn.disabled = convertedFiles.length === 0;
+
+            if (convertedFiles.length > 0) {
+                showToast(`Successfully converted ${convertedFiles.length} file(s)!`);
+            } else {
+                showToast('Conversion finished, but no files were successfully converted.', 'warning');
+            }
+
+            setTimeout(() => {
+                convertBtn.innerHTML = '▶️ Start Conversion';
+                convertBtn.style.background = '#3b82f6';
+                updateConvertButtonState();
+            }, 3000);
+        }
+
+        // --- START OF SVG CONVERSION LOGIC ---
+
+        function convertSvgToDrawio(svgContent, filename) {
+            const parser = new DOMParser();
+            const svgDoc = parser.parseFromString(svgContent, "image/svg+xml");
+            const svgElement = svgDoc.documentElement;
+
+            if (svgElement.tagName.toLowerCase() !== 'svg' || svgDoc.querySelector('parsererror')) {
+                throw new Error('Invalid SVG file.');
+            }
+
+            const context = {
+                cellId: 2,
+                cells: [],
+                defs: new Map(),
+                svg: svgElement
+            };
+
+            svgElement.querySelectorAll('defs').forEach(defElement => {
+                for (const child of defElement.children) {
+                    if (child.id) {
+                        context.defs.set(child.id, child);
+                    }
+                }
+            });
+            
+            const initialTransform = context.svg.createSVGMatrix();
+            traverseSvg(context, svgElement, initialTransform, {});
+
+            const viewBox = svgElement.getAttribute('viewBox');
+            let pageWidth, pageHeight;
+            if (viewBox) {
+                const parts = viewBox.split(' ').map(parseFloat);
+                pageWidth = parts[2];
+                pageHeight = parts[3];
+            } else {
+                pageWidth = parseFloat(svgElement.getAttribute('width')) || 800;
+                pageHeight = parseFloat(svgElement.getAttribute('height')) || 600;
+            }
+
+            return generateDrawioXml(context.cells, filename, pageWidth, pageHeight);
+        }
+
+        function traverseSvg(context, element, parentTransform, parentStyle) {
+            if (element.tagName.toLowerCase() === 'defs' || element.tagName.toLowerCase() === 'title' || element.tagName.toLowerCase() === 'desc') {
+                return;
+            }
+
+            const computedStyle = computeStyle(element, parentStyle, context.defs);
+            const transform = parentTransform.multiply(getTransform(element, context.svg));
+
+            if (element.tagName.toLowerCase() !== 'g' && element.tagName.toLowerCase() !== 'svg') {
+                const cell = convertElementToCell(context, element, transform, computedStyle);
+                if (cell) {
+                    if (Array.isArray(cell)) {
+                        context.cells.push(...cell);
+                    } else {
+                        context.cells.push(cell);
+                    }
+                }
+            }
+
+            for (const child of element.children) {
+                traverseSvg(context, child, transform, computedStyle);
+            }
+        }
+        
+        function getTransform(element, svg) {
+            const transformAttr = element.getAttribute('transform');
+            if (!transformAttr) return svg.createSVGMatrix();
+
+            const matrix = svg.createSVGMatrix();
+            // Corrected regex: remove double backslashes
+            const regex = /(\w+)\( ([^)]+)\)/g;
+            let match;
+            while ((match = regex.exec(transformAttr)) !== null) {
+                const type = match[1];
+                const values = match[2].split(/[\s,]+/).map(v => parseFloat(v.trim())).filter(v => !isNaN(v));
+                
+                if (values.length === 0) continue;
+
+                let m = svg.createSVGMatrix();
+                switch(type.toLowerCase()) {
+                    case 'translate':
+                        m = m.translate(values[0], values[1] || 0);
+                        break;
+                    case 'scale':
+                        m = m.scale(values[0], values[1] === undefined ? values[0] : values[1]);
+                        break;
+                    case 'rotate':
+                        m = m.rotate(values[0], values[1] || 0, values[2] || 0);
+                        break;
+                    case 'skewx':
+                        m = m.skewX(values[0]);
+                        break;
+                    case 'skewy':
+                        m = m.skewY(values[0]);
+                        break;
+                    case 'matrix':
+                         if (values.length === 6) {
+                            m.a = values[0]; m.b = values[1]; m.c = values[2];
+                            m.d = values[3]; m.e = values[4]; m.f = values[5];
+                        }
+                        break;
+                }
+                matrix = matrix.multiply(m);
+            }
+            return matrix;
+        }
+
+        function computeStyle(element, parentStyle, defs) {
+            const style = { ...parentStyle };
+            const styleAttr = element.getAttribute('style');
+            if (styleAttr) {
+                styleAttr.split(';').forEach(s => {
+                    const [key, value] = s.split(':').map(str => str.trim());
+                    if (key && value) style[key.toLowerCase()] = value;
+                });
+            }
+
+            ['fill', 'stroke', 'stroke-width', 'stroke-opacity', 'fill-opacity', 'opacity', 'font-size', 'font-family', 'font-weight', 'text-anchor', 'marker-start', 'marker-end'].forEach(attr => {
+                const val = element.getAttribute(attr);
+                if (val) style[attr] = val;
+            });
+            
+            if (style.fill && style.fill.startsWith('url(#')) {
+                const id = style.fill.slice(5, -1).replace(/"/g, '');
+                const def = defs.get(id);
+                if (def && def.tagName.toLowerCase() === 'lineargradient') {
+                    const stops = Array.from(def.querySelectorAll('stop'));
+                    
+                    const getStopColor = (stopEl) => {
+                        let stopColor = stopEl.getAttribute('stop-color') || '#FFFFFF';
+                        const stopStyleAttr = stopEl.getAttribute('style');
+                        if (stopStyleAttr) {
+                            const match = /stop-color:\s*([^;]+)/.exec(stopStyleAttr);
+                            if (match) stopColor = match[1].trim();
+                        }
+                        return stopColor;
+                    };
+
+                    if (stops.length > 0) {
+                        style.gradient = {
+                            color1: getStopColor(stops[0]),
+                            color2: stops.length > 1 ? getStopColor(stops[stops.length - 1]) : getStopColor(stops[0]),
+                            direction: getGradientDirection(def)
+                        };
+                    }
+                }
+            }
+
+            return style;
+        }
+        
+        function getGradientDirection(gradient) {
+            const x1 = parseFloat(gradient.getAttribute('x1') || '0');
+            const y1 = parseFloat(gradient.getAttribute('y1') || '0');
+            const x2 = parseFloat(gradient.getAttribute('x2') || '0');
+            const y2 = parseFloat(gradient.getAttribute('y2') || '1');
+            const dx = x2 - x1;
+            const dy = y2 - y1;
+
+            if (Math.abs(dx) > Math.abs(dy)) {
+                return dx > 0 ? 'east' : 'west';
+            } else {
+                return dy > 0 ? 'south' : 'north';
+            }
+        }
+
+        function applyTransform(p, m) {
+            return {
+                x: m.a * p.x + m.c * p.y + m.e,
+                y: m.b * p.x + m.d * p.y + m.f
+            };
+        }
+
+        function convertElementToCell(context, element, transform, style) {
+            const tagName = element.tagName.toLowerCase();
+            let cell;
+
+            switch (tagName) {
+                case 'rect': cell = convertRect(element, transform, style); break;
+                case 'circle':
+                case 'ellipse': cell = convertEllipse(element, transform, style); break;
+                case 'line': cell = convertLine(element, transform, style, context.defs); break;
+                case 'polygon': cell = convertPolygon(element, transform, style, context.defs); break;
+                case 'polyline': cell = convertPolyline(element, transform, style, context.defs); break;
+                case 'path': cell = convertPath(element, transform, style, context.defs); break;
+                case 'text': cell = convertText(element, transform, style); break;
+                default: 
+                    console.warn(`Unsupported SVG element: <${tagName}>`);
+                    return null;
+            }
+            
+            if (cell) {
+                if (Array.isArray(cell)) {
+                    cell.forEach(c => {
+                        c.id = context.cellId++;
+                        c.parent = '1';
+                    });
+                } else {
+                    cell.id = context.cellId++;
+                    cell.parent = '1';
+                }
+            }
+            return cell;
+        }
+
+        function createCellStyle(style, isText = false) {
+            let cellStyle = '';
+            const fill = style.fill || (isText ? '#000000' : 'none');
+            const stroke = style.stroke || 'none';
+            const strokeWidth = parseFloat(style['stroke-width'] || '1');
+            
+            const opacity = parseFloat(style.opacity || '1');
+            const fillOpacity = parseFloat(style['fill-opacity'] || '1');
+            const strokeOpacity = parseFloat(style['stroke-opacity'] || '1');
+
+            if (style.gradient && !isText) {
+                cellStyle += `gradientColor=${convertColor(style.gradient.color2, 'none')};`;
+                cellStyle += `gradientDirection=${style.gradient.direction};`;
+                cellStyle += `fillColor=${convertColor(style.gradient.color1, '#FFFFFF')};`;
+            } else {
+                cellStyle += `fillColor=${convertColor(fill, 'none')};`;
+            }
+            
+            cellStyle += `strokeColor=${convertColor(stroke, 'none')};`;
+            if (strokeWidth > 0) {
+                 cellStyle += `strokeWidth=${strokeWidth};`;
+            }
+           
+            cellStyle += `opacity=${opacity * 100};`;
+            cellStyle += `fillOpacity=${fillOpacity * 100};`;
+            cellStyle += `strokeOpacity=${strokeOpacity * 100};`;
+            
+            return cellStyle;
+        }
+
+        function convertRect(element, transform, style) {
+            const x = parseFloat(element.getAttribute('x') || '0');
+            const y = parseFloat(element.getAttribute('y') || '0');
+            const width = parseFloat(element.getAttribute('width') || '0');
+            const height = parseFloat(element.getAttribute('height') || '0');
+            const rx = parseFloat(element.getAttribute('rx') || '0');
+            const ry = parseFloat(element.getAttribute('ry') || '0');
+
+            // For rotated rectangles, we need to find the new bounding box and rotation
+            const p1 = applyTransform({ x, y }, transform);
+            const p2 = applyTransform({ x: x + width, y: y }, transform);
+            const p3 = applyTransform({ x: x, y: y + height }, transform);
+
+            // Calculate new width and height based on transformed corner points
+            const newWidth = Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
+            const newHeight = Math.sqrt(Math.pow(p3.x - p1.x, 2) + Math.pow(p3.y - p1.y, 2));
+            
+            // Rotation in degrees
+            const rotation = Math.atan2(transform.b, transform.a) * (180 / Math.PI);
+
+            let rectStyle = `shape=rectangle;whiteSpace=wrap;html=1;`;
+            if (rx > 0 || ry > 0) {
+                rectStyle += `rounded=1;arcSize=${((rx/width + ry/height)/2 * 100)};`;
+            }
+            rectStyle += createCellStyle(style);
+            if (rotation !== 0) {
+                rectStyle += `rotation=${rotation.toFixed(2)};`;
+            }
+
+            return {
+                value: '',
+                style: rectStyle,
+                vertex: 1,
+                geometry: { x: p1.x, y: p1.y, width: newWidth, height: newHeight }
+            };
+        }
+        
+        function convertEllipse(element, transform, style) {
+            const cx = parseFloat(element.getAttribute('cx') || '0');
+            const cy = parseFloat(element.getAttribute('cy') || '0');
+            const rx = element.tagName === 'ellipse' ? parseFloat(element.getAttribute('rx')) : parseFloat(element.getAttribute('r'));
+            const ry = element.tagName === 'ellipse' ? parseFloat(element.getAttribute('ry')) : parseFloat(element.getAttribute('r'));
+
+            const p = applyTransform({ x: cx, y: cy }, transform);
+            
+            // Calculate transformed radii by transforming vectors (rx, 0) and (0, ry)
+            const mat = transform;
+            const tRx = Math.sqrt(mat.a * mat.a * rx * rx + mat.c * mat.c * ry * ry);
+            const tRy = Math.sqrt(mat.b * mat.b * rx * rx + mat.d * mat.d * ry * ry);
+            
+            // This is a simplification. Real transformed ellipse can be rotated and skewed.
+            // We approximate with an axis-aligned ellipse inside the transformed bounding box.
+            const rotation = Math.atan2(transform.b, transform.a) * (180 / Math.PI);
+
+            return {
+                value: '',
+                style: `shape=ellipse;whiteSpace=wrap;html=1;${createCellStyle(style)}rotation=${rotation.toFixed(2)};`,
+                vertex: 1,
+                geometry: { x: p.x - tRx, y: p.y - tRy, width: tRx * 2, height: tRy * 2 }
+            };
+        }
+
+        function convertLine(element, transform, style, defs) {
+            const x1 = parseFloat(element.getAttribute('x1') || '0');
+            const y1 = parseFloat(element.getAttribute('y1') || '0');
+            const x2 = parseFloat(element.getAttribute('x2') || '0');
+            const y2 = parseFloat(element.getAttribute('y2') || '0');
+
+            const p1 = applyTransform({ x: x1, y: y1 }, transform);
+            const p2 = applyTransform({ x: x2, y: y2 }, transform);
+
+            const edgeStyle = { ...style, fill: 'none' };
+            let baseLineStyle = `edgeStyle=none;html=1;${createCellStyle(edgeStyle)}`;
+            
+            const markerEnd = style['marker-end'];
+            const markerStart = style['marker-start'];
+
+            // Remove markers from the main line style
+            if (markerStart) baseLineStyle += 'startArrow=none;';
+            if (markerEnd) baseLineStyle += 'endArrow=none;';
+
+            const lineCell = {
+                value: '',
+                style: baseLineStyle,
+                edge: 1,
+                geometry: { relative: 1, points: [[p1.x, p1.y], [p2.x, p2.y]] }
+            };
+
+            const cells = [lineCell];
+
+            // Create a second cell for arrowheads if they exist
+            if (markerEnd || markerStart) {
+                let arrowStyleStr = 'edgeStyle=none;html=1;rounded=0;strokeColor=none;fillColor=none;';
+                if (markerEnd) {
+                    arrowStyleStr += getArrowStyle(markerEnd, defs, 'end', style);
+                }
+                if (markerStart) {
+                    arrowStyleStr += getArrowStyle(markerStart, defs, 'start', style);
+                }
+
+                const arrowCell = {
+                    value: '',
+                    style: arrowStyleStr,
+                    edge: 1,
+                    geometry: {
+                        relative: 1,
+                        as: 'geometry',
+                        sourcePoint: { x: p1.x, y: p1.y },
+                        targetPoint: { x: p2.x, y: p2.y }
+                    }
+                };
+                cells.push(arrowCell);
+            }
+
+            return cells;
+        }
+
+        function getArrowStyle(markerId, defs, direction, lineStyle) {
+            const id = markerId.replace(/url\(|\)|"|'|#/g, '');
+            if (!defs.has(id)) return '';
+
+            const markerElement = defs.get(id);
+            const shapeElement = markerElement.children[0];
+            if (!shapeElement) return '';
+
+            let arrowType = 'classic';
+            const shapeTag = shapeElement.tagName.toLowerCase();
+            
+            const markerFill = shapeElement.getAttribute('fill') || markerElement.getAttribute('fill') || lineStyle.stroke || 'black';
+            const isFilled = markerFill && markerFill.toLowerCase() !== 'none' && markerFill.toLowerCase() !== 'transparent';
+
+            if (shapeTag === 'path') {
+                const d = (shapeElement.getAttribute('d') || '').toLowerCase();
+                if (d.includes('m 0 0') && d.includes('l 10 5') && d.includes('l 0 -10') && d.includes('z')) {
+                     arrowType = 'classic';
+                } else if (isFilled) {
+                    arrowType = 'block';
+                } else {
+                    arrowType = 'open';
+                }
+            } else if (shapeTag === 'polygon' || shapeTag === 'rect') {
+                 arrowType = 'block';
+            }
+
+            const fillStyle = `${direction}Fill=${isFilled ? 1 : 0};`;
+            
+            const refX = parseFloat(markerElement.getAttribute('refX') || '0');
+            const markerWidth = parseFloat(markerElement.getAttribute('markerWidth') || '8');
+            const size = markerWidth * 0.8 + refX * 0.5; // Heuristic for size
+            const sizeStyle = `${direction}Size=${Math.max(4, size)};`;
+            
+            const strokeColor = convertColor(lineStyle.stroke || 'black', 'none');
+
+            return `${direction}Arrow=${arrowType};${fillStyle}${sizeStyle}strokeColor=${strokeColor};fillColor=${convertColor(markerFill, 'none')};`;
+        }
+
+        function convertPolygon(element, transform, style, defs) {
+            const pointsStr = element.getAttribute('points') || '';
+            const points = parsePoints(pointsStr);
+
+            if (points.length === 0) return null;
+            
+            // A polygon is a closed polyline
+            return convertPolyline(element, transform, style, defs, true);
+        }
+
+        function convertPolyline(element, transform, style, defs, closed = false) {
+            const pointsStr = element.getAttribute('points') || '';
+            const points = parsePoints(pointsStr);
+
+            if (points.length < 2) return null;
+
+            const transformedPoints = points.map(p => applyTransform(p, transform));
+
+            const edgeStyle = { ...style, fill: closed ? style.fill : 'none' };
+            let baseStyle = `html=1;${createCellStyle(edgeStyle)}`;
+            if (closed) {
+                baseStyle += 'shape=flexArrow;endArrow=none;';
+            } else {
+                baseStyle += 'edgeStyle=none;';
+            }
+
+            const mainCell = {
+                value: '',
+                style: baseStyle,
+                edge: !closed,
+                vertex: closed,
+                geometry: { 
+                    relative: 1, 
+                    points: transformedPoints.map(p => [p.x, p.y]) 
+                }
+            };
+            
+            if(closed) {
+                const minX = Math.min(...transformedPoints.map(p => p.x));
+                const minY = Math.min(...transformedPoints.map(p => p.y));
+                const maxX = Math.max(...transformedPoints.map(p => p.x));
+                const maxY = Math.max(...transformedPoints.map(p => p.y));
+                
+                mainCell.geometry = {
+                    x: minX,
+                    y: minY,
+                    width: maxX - minX,
+                    height: maxY - minY,
+                    points: transformedPoints.map(p => [p.x - minX, p.y - minY])
+                };
+                mainCell.style = `shape=stencil;stencil(points=${JSON.stringify(mainCell.geometry.points)});${createCellStyle(edgeStyle)}`;
+            }
+
+            const cells = [mainCell];
+            const markerEnd = style['marker-end'];
+            const markerStart = style['marker-start'];
+
+            if (!closed && (markerEnd || markerStart)) {
+                let arrowStyleStr = 'edgeStyle=none;html=1;rounded=0;strokeColor=none;fillColor=none;';
+                if (markerEnd) {
+                    arrowStyleStr += getArrowStyle(markerEnd, defs, 'end', style);
+                }
+                if (markerStart) {
+                    arrowStyleStr += getArrowStyle(markerStart, defs, 'start', style);
+                }
+
+                const arrowCell = {
+                    value: '',
+                    style: arrowStyleStr,
+                    edge: 1,
+                    geometry: {
+                        relative: 1,
+                        as: 'geometry',
+                        sourcePoint: transformedPoints[0],
+                        targetPoint: transformedPoints[transformedPoints.length - 1],
+                        points: transformedPoints.map(p => [p.x, p.y])
+                    }
+                };
+                cells.push(arrowCell);
+                // Remove markers from main line
+                mainCell.style += 'startArrow=none;endArrow=none;';
+            }
+
+            return cells;
+        }
+
+        function convertPath(element, transform, style, defs) {
+            const d = element.getAttribute('d');
+            if (!d) return null;
+            
+            // Path parsing is complex. We'll create a placeholder.
+            // A more advanced implementation would parse the 'd' attribute.
+            const bbox = element.getBBox();
+            if (!bbox || bbox.width === 0 || bbox.height === 0) {
+                return null; // Ignore empty paths
+            }
+            
+            const p1 = applyTransform({ x: bbox.x, y: bbox.y }, transform);
+            const p2 = applyTransform({ x: bbox.x + bbox.width, y: bbox.y }, transform);
+            const p3 = applyTransform({ x: bbox.x, y: bbox.y + bbox.height }, transform);
+            
+            const newWidth = Math.sqrt(Math.pow(p2.x - p1.x, 2) + Math.pow(p2.y - p1.y, 2));
+            const newHeight = Math.sqrt(Math.pow(p3.x - p1.x, 2) + Math.pow(p3.y - p1.y, 2));
+            const rotation = Math.atan2(transform.b, transform.a) * (180 / Math.PI);
+
+            return {
+                value: '',
+                // Using a custom shape with a 'path' attribute could work with a custom stencil.
+                // For now, a dashed rectangle placeholder.
+                style: `shape=rect;dashed=1;strokeColor=#c0c0c0;${createCellStyle(style)}rotation=${rotation.toFixed(2)};`,
+                vertex: 1,
+                geometry: { x: p1.x, y: p1.y, width: newWidth, height: newHeight }
+            };
+        }
+
+        function convertText(element, transform, style) {
+            const x = parseFloat(element.getAttribute('x') || '0');
+            const y = parseFloat(element.getAttribute('y') || '0');
+            
+            // Get text content, including tspan elements
+            let textContent = '';
+            for (const node of element.childNodes) {
+                if (node.nodeType === Node.TEXT_NODE) {
+                    textContent += node.textContent;
+                } else if (node.nodeType === Node.ELEMENT_NODE && node.tagName.toLowerCase() === 'tspan') {
+                     textContent += node.textContent;
+                }
+            }
+            textContent = textContent.trim();
+            if (!textContent) return null;
+
+            const p = applyTransform({ x, y }, transform);
+            const rotation = Math.atan2(transform.b, transform.a) * (180 / Math.PI);
+            
+            // BBox is more reliable for text dimensions
+            const bbox = element.getBBox();
+            const scaleX = Math.sqrt(transform.a * transform.a + transform.b * transform.b);
+            const scaleY = Math.sqrt(transform.c * transform.c + transform.d * transform.d);
+            const width = bbox.width * scaleX;
+            const height = bbox.height * scaleY;
+
+            let finalX = p.x;
+            const textAnchor = style['text-anchor'] || 'start';
+            if (textAnchor === 'middle') {
+                finalX -= width / 2;
+            } else if (textAnchor === 'end') {
+                finalX -= width;
+            }
+            
+            // Adjust Y position based on bbox
+            let finalY = p.y + bbox.y*scaleY - height*0.1;
+
+            let textStyle = `text;html=1;strokeColor=none;fillColor=none;align=${textAnchor === 'middle' ? 'center' : (textAnchor === 'end' ? 'right' : 'left')};verticalAlign=middle;`;
+            textStyle += `fontColor=${convertColor(style.fill || '#000000', '#000000')};`;
+            const fontSize = parseFloat(style['font-size'] || '12');
+            textStyle += `fontSize=${(fontSize * scaleY).toFixed(2)};`;
+            if (style['font-family']) textStyle += `fontFamily=${style['font-family'].split(',')[0]};`;
+            if (style['font-weight'] === 'bold' || parseInt(style['font-weight']) >= 700) {
+                textStyle += `fontStyle=1;`;
+            }
+            if (rotation !== 0) {
+                textStyle += `rotation=${rotation.toFixed(2)};`;
+            }
+
+            return {
+                value: textContent,
+                style: textStyle,
+                vertex: 1,
+                geometry: { x: finalX, y: finalY, width: width, height: height }
+            };
+        }
+
+        function convertColor(color, defaultColor) {
+            if (!color || color.toLowerCase() === 'none') return defaultColor;
+            if (color.startsWith('rgb')) {
+                const match = color.match(/(\d+)/g);
+                if (match) {
+                    return '#' + match.slice(0, 3).map(v => parseInt(v).toString(16).padStart(2, '0')).join('');
+                }
+            }
+            // Handle color names
+            const colorMap = { "black": "#000000", "white": "#FFFFFF", "red": "#FF0000", "green": "#008000", "blue": "#0000FF", "yellow": "#FFFF00" };
+            if (colorMap[color.toLowerCase()]) return colorMap[color.toLowerCase()];
+            
+            return color;
+        }
+        
+        function parsePoints(pointsStr) {
+            return (pointsStr || '').trim().split(/[\s,]+/).reduce((acc, val, i) => {
+                const n = parseFloat(val);
+                if (!isNaN(n)) {
+                    if (i % 2 === 0) {
+                        acc.push({ x: n });
+                    } else if (acc.length > 0) {
+                        acc[acc.length - 1].y = n;
+                    }
+                }
+                return acc;
+            }, []).filter(p => p.y !== undefined);
+        }
+
+        function generateDrawioXml(cells, filename, width, height) {
+            const cellsXml = cells.map(cell => {
+                const value = cell.value ? he.encode(cell.value, {useNamedReferences: true}) : '';
+                let geoXml = '';
+                
+                if (cell.geometry) {
+                    if (cell.geometry.points && !cell.vertex) { // Edge
+                        geoXml = `<mxGeometry relative="1" as="geometry"><Array as="points">${cell.geometry.points.map(p => `<mxPoint x="${p[0]}" y="${p[1]}"/>`).join('')}</Array></mxGeometry>`;
+                    } else if (cell.geometry.sourcePoint) { // Arrowhead-only edge
+                        geoXml = `<mxGeometry relative="1" as="geometry">` +
+                                 `<mxPoint x="${cell.geometry.sourcePoint.x}" y="${cell.geometry.sourcePoint.y}" as="sourcePoint"/>` +
+                                 `<mxPoint x="${cell.geometry.targetPoint.x}" y="${cell.geometry.targetPoint.y}" as="targetPoint"/>` +
+                                 (cell.geometry.points ? `<Array as="points">${cell.geometry.points.map(p => `<mxPoint x="${p[0]}" y="${p[1]}"/>`).join('')}</Array>` : '') +
+                                 `</mxGeometry>`;
+                    } else { // Vertex
+                        geoXml = `<mxGeometry x="${cell.geometry.x}" y="${cell.geometry.y}" width="${cell.geometry.width}" height="${cell.geometry.height}" as="geometry">`;
+                        if (cell.geometry.points) { // Stencil shape
+                             geoXml += `<Array as="points">${cell.geometry.points.map(p => `<mxPoint x="${p[0]}" y="${p[1]}"/>`).join('')}</Array>`;
+                        }
+                        geoXml += `</mxGeometry>`;
+                    }
+                }
+
+                const parent = cell.parent || '1';
+                const vertex = cell.vertex ? ' vertex="1"' : '';
+                const edge = cell.edge ? ' edge="1"' : '';
+
+                return `        <mxCell id="${cell.id}" value="${value}" style="${cell.style}" parent="${parent}"${vertex}${edge}>\n          ${geoXml}\n        </mxCell>`;
+            }).join('\n');
+
+            return `<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" modified="${new Date().toISOString()}" agent="QuickDevKit SVG Converter v1.1.0" etag="${Math.random().toString(36).substring(7)}" version="24.6.4" type="device">
+  <diagram name="Converted from ${he.encode(filename)}" id="diagram-1">
+    <mxGraphModel dx="${width*1.2}" dy="${height*1.2}" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="${width}" pageHeight="${height}" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+${cellsXml}
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>`;
+        }
+
+        // --- END OF SVG CONVERSION LOGIC ---
+
+        // Add result to list
+        function addResultToList(file) {
+            const resultItem = document.createElement('div');
+            resultItem.className = 'result-item';
+            resultItem.innerHTML = `
+                <div class="result-info">
+                    <div class="result-icon">✅</div>
+                    <div class="result-details">
+                        <h4>${file.converted}</h4>
+                        <p>Converted • ${file.size}</p>
+                    </div>
+                </div>
+                <button class="btn-secondary" onclick="showFileContent('${file.converted}')">
+                    👁️ View & Download
+                </button>
+            `;
+            resultsList.appendChild(resultItem);
+        }
+
+        // Modal functionality
+        const modal = document.getElementById('fileModal');
+        const modalTitle = document.getElementById('modalTitle');
+        const fileContent = document.getElementById('fileContent');
+        const copyBtn = document.getElementById('copyBtn');
+        let currentModalFile = null;
+
+        function showFileContent(convertedName) {
+            const file = convertedFiles.find(f => f.converted === convertedName);
+            if (file) {
+                currentModalFile = file;
+                modalTitle.textContent = `${file.converted} (${file.size})`;
+                fileContent.textContent = file.data;
+                modal.style.display = 'block';
+                copyBtn.textContent = '📋 Copy';
+                copyBtn.classList.remove('success');
+            }
+        }
+
+        function closeModal() {
+            modal.style.display = 'none';
+            currentModalFile = null;
+        }
+
+        function copyContent() {
+            if (!currentModalFile) return;
+            navigator.clipboard.writeText(currentModalFile.data).then(() => {
+                copyBtn.textContent = '✅ Copied!';
+                copyBtn.classList.add('success');
+                showToast('Content copied to clipboard!');
+            }, () => {
+                showToast('Failed to copy content.', 'error');
+            });
+        }
+        
+        function downloadAsFile() {
+            if (!currentModalFile) return;
+            const blob = new Blob([currentModalFile.data], { type: 'application/vnd.jgraph.mxfile' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = currentModalFile.converted;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+        
+        function openInNewTab() {
+             if (!currentModalFile) return;
+             const blob = new Blob([currentModalFile.data], { type: 'application/vnd.jgraph.mxfile' });
+             const url = URL.createObjectURL(blob);
+             window.open(url, '_blank');
+        }
+        
+        function downloadAllFiles() {
+            // This would ideally zip files, but that requires a library.
+            // For now, we'll download them individually.
+            if (convertedFiles.length === 0) {
+                showToast('No files to download.', 'warning');
+                return;
+            }
+            convertedFiles.forEach((file, index) => {
+                setTimeout(() => {
+                    const blob = new Blob([file.data], { type: 'application/vnd.jgraph.mxfile' });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = file.converted;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+                }, index * 300); // Stagger downloads
+            });
+        }
+        
+        downloadAllBtn.addEventListener('click', () => {
+            if (convertedFiles.length > 1) {
+                showToast(`Downloading ${convertedFiles.length} files...`, 'success');
+            }
+            downloadAllFiles();
+        });
+
+        // Close modal on escape key
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && modal.style.display === 'block') {
+                closeModal();
+            }
+        });
+        
+        // he.js library for HTML entity encoding
+        !function(e,t){"object"==typeof exports&&"undefined"!=typeof module?module.exports=t():"function"==typeof define&&define.amd?define(t):(e=e||self).he=t()}(this,function(){"use strict";var e,t=/[\0-\x1F\x7F-\x9F]/g,r=/[\0-\x1F\x7F-\x9F\u00AD\u0600-\u0605\u061C\u06DD\u070F\u08E2\u180E\u2000-\u200F\u2028-\u202F\u205F\u2060-\u206F\u3000\uFEFF\uFFFB]/,n=/[&<>"]/g,o=RegExp(n.source),i=/[&<>"]/g,s=RegExp(i.source),a=/[<>"]/g,c=RegExp(a.source),u=/[<>"]/g,p=RegExp(u.source),l=/[<>"]/,f=RegExp(l.source),d=/[<>"]/,h=RegExp(d.source),g=e=>{const t=Object.create(null);let r,n=0;for(r in e)t[e[r]]=r.slice(n,n+=1);return t},m=Object.create(null),v=Object.create(null),y=Object.create(null),b=Object.create(null),x=Object.create(null),w=Object.create(null);e={encode:function(e,t){let r=String(e);if(!r)return"";const n=(t=t||{}).useNamedReferences,a=t.decimal,c=void 0===t.encodeEverything||t.encodeEverything,u=void 0===t.strict||t.strict,p=t.allowUnsafeSymbols;if(p&&c)throw new Error("The `allowUnsafeSymbols` and `encodeEverything` options are mutually exclusive.");if(p&&!u)throw new Error("The `allowUnsafeSymbols` option requires the `strict` option to be enabled.");let l;return l=c?i:l=u?o:n?f:s,r.replace(l,e=>"&"==e?"&amp;":"<"==e?"&lt;":">"==e?"&gt;":'"'==e?"&quot;":"'"==e?"&#x27;":"`"==e?"&#x60;":"")},decode:function(e,n){const o=(n=n||{}).strict,i=n.scope;if(!e)return"";const s=e=>console.log(`Parse error: ${e} in ${i}.`),a=o?s:()=>{};let c=e;return o&&!r.test(e)||(c=e.replace(t,"")),c.replace(/&(?:#([0-9]+)|#x([a-fA-F0-9]+)|([0-9a-zA-Z]+));/g,(e,t,r,n)=>{if(n){if("Object"==i&&"constructor"==n.toLowerCase()||"DOM"==i&&("innerHTML"==n.toLowerCase()||"outerHTML"==n.toLowerCase()))return a(`Blacklisted attribute name: \`${n}\``),e;if(n in m)return m[n];if(n in v)return v[n];a(`Invalid named character reference: \`&${n};\``)}else{let o;if(o=t?parseInt(t,10):parseInt(r,16),o>=1114112)return a(`Invalid character code point: \`${o}\``),e;if(o>=55296&&o<=57343)return a(`Invalid character code point: \`${o}\``),e;if(o<=65535&&o>=65533)return a(`Invalid character code point: \`${o}\``),e;if(function(e){return e>=1&&e<=8||11==e||e>=13&&e<=31||e>=127&&e<=159||e>=64976&&e<=65007||65535==e||65534==e}(o))return a(`Invalid character code point: \`${o}\``),e;if(o in y)return y[o];let i=String.fromCodePoint(o);return y[o]=i,i}return e})},escape:function(e){const t=String(e);return t.replace(p,e=>"&"==e?"&amp;":"<"==e?"&lt;":">"==e?"&gt;":'"'==e?"&quot;":"'"==e?"&#x27;":"`"==e?"&#x60;":"")},unescape:function(e,t){const r=(t=t||{}).strict;let n=e;if(!n)return"";const o=r?s:h;return n.replace(o,e=>"&amp;"==e?"&":"&lt;"==e?"<":"&gt;"==e?">":"&quot;"==e?'"':"&#x27;"==e?"'":"&#x60;"==e?"`":"")},version:"1.0.0"};return e});
+        
+        // Initial setup
+        updateConvertButtonState();
+        updatePreview();
+    </script>
