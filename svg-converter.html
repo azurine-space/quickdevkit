@@ -854,7 +854,7 @@
                             <label for="format">Output Format</label>
                             <select id="format">
                                 <option value="drawio">Draw.io (.drawio)</option>
-                                <option value="xml">XML (.xml)</n>
+                                <option value="xml">XML (.xml)</option>
                                 <option value="library">Library (.xml)</option>
                             </select>
                         </div>
@@ -1311,7 +1311,7 @@
             const transformAttr = element.getAttribute('transform');
             if (!transformAttr) return svg.createSVGMatrix();
 
-            const matrix = svg.createSVGMatrix();
+            let matrix = svg.createSVGMatrix();
             // Corrected regex: remove double backslashes
             const regex = /(\w+)\( ([^)]+)\)/g;
             let match;
@@ -1555,9 +1555,12 @@
             const markerEnd = style['marker-end'];
             const markerStart = style['marker-start'];
 
-            // Remove markers from the main line style
-            if (markerStart) baseLineStyle += 'startArrow=none;';
-            if (markerEnd) baseLineStyle += 'endArrow=none;';
+            if (markerEnd) {
+                baseLineStyle += getArrowStyle(markerEnd, defs, 'end', style);
+            }
+            if (markerStart) {
+                baseLineStyle += getArrowStyle(markerStart, defs, 'start', style);
+            }
 
             const lineCell = {
                 value: '',
@@ -1566,37 +1569,11 @@
                 geometry: { relative: 1, points: [[p1.x, p1.y], [p2.x, p2.y]] }
             };
 
-            const cells = [lineCell];
-
-            // Create a second cell for arrowheads if they exist
-            if (markerEnd || markerStart) {
-                let arrowStyleStr = 'edgeStyle=none;html=1;rounded=0;strokeColor=none;fillColor=none;';
-                if (markerEnd) {
-                    arrowStyleStr += getArrowStyle(markerEnd, defs, 'end', style);
-                }
-                if (markerStart) {
-                    arrowStyleStr += getArrowStyle(markerStart, defs, 'start', style);
-                }
-
-                const arrowCell = {
-                    value: '',
-                    style: arrowStyleStr,
-                    edge: 1,
-                    geometry: {
-                        relative: 1,
-                        as: 'geometry',
-                        sourcePoint: { x: p1.x, y: p1.y },
-                        targetPoint: { x: p2.x, y: p2.y }
-                    }
-                };
-                cells.push(arrowCell);
-            }
-
-            return cells;
+            return [lineCell];
         }
 
         function getArrowStyle(markerId, defs, direction, lineStyle) {
-            const id = markerId.replace(/url\(|\)|"|'|#/g, '');
+            const id = markerId.replace(/url\(|\)|\"|\'|#/g, '');
             if (!defs.has(id)) return '';
 
             const markerElement = defs.get(id);
@@ -1655,7 +1632,7 @@
             const edgeStyle = { ...style, fill: closed ? style.fill : 'none' };
             let baseStyle = `html=1;${createCellStyle(edgeStyle)}`;
             if (closed) {
-                baseStyle += 'shape=flexArrow;endArrow=none;';
+                baseStyle += 'shape=flexArrow;';
             } else {
                 baseStyle += 'edgeStyle=none;';
             }
@@ -1687,37 +1664,19 @@
                 mainCell.style = `shape=stencil;stencil(points=${JSON.stringify(mainCell.geometry.points)});${createCellStyle(edgeStyle)}`;
             }
 
-            const cells = [mainCell];
             const markerEnd = style['marker-end'];
             const markerStart = style['marker-start'];
 
-            if (!closed && (markerEnd || markerStart)) {
-                let arrowStyleStr = 'edgeStyle=none;html=1;rounded=0;strokeColor=none;fillColor=none;';
+            if (!closed) {
                 if (markerEnd) {
-                    arrowStyleStr += getArrowStyle(markerEnd, defs, 'end', style);
+                    mainCell.style += getArrowStyle(markerEnd, defs, 'end', style);
                 }
                 if (markerStart) {
-                    arrowStyleStr += getArrowStyle(markerStart, defs, 'start', style);
+                    mainCell.style += getArrowStyle(markerStart, defs, 'start', style);
                 }
-
-                const arrowCell = {
-                    value: '',
-                    style: arrowStyleStr,
-                    edge: 1,
-                    geometry: {
-                        relative: 1,
-                        as: 'geometry',
-                        sourcePoint: transformedPoints[0],
-                        targetPoint: transformedPoints[transformedPoints.length - 1],
-                        points: transformedPoints.map(p => [p.x, p.y])
-                    }
-                };
-                cells.push(arrowCell);
-                // Remove markers from main line
-                mainCell.style += 'startArrow=none;endArrow=none;';
             }
 
-            return cells;
+            return [mainCell];
         }
 
         function convertPath(element, transform, style, defs) {
@@ -1865,18 +1824,7 @@
                 return `        <mxCell id="${cell.id}" value="${value}" style="${cell.style}" parent="${parent}"${vertex}${edge}>\n          ${geoXml}\n        </mxCell>`;
             }).join('\n');
 
-            return `<?xml version="1.0" encoding="UTF-8"?>
-<mxfile host="app.diagrams.net" modified="${new Date().toISOString()}" agent="QuickDevKit SVG Converter v1.1.0" etag="${Math.random().toString(36).substring(7)}" version="24.6.4" type="device">
-  <diagram name="Converted from ${he.encode(filename)}" id="diagram-1">
-    <mxGraphModel dx="${width*1.2}" dy="${height*1.2}" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="${width}" pageHeight="${height}" math="0" shadow="0">
-      <root>
-        <mxCell id="0" />
-        <mxCell id="1" parent="0" />
-${cellsXml}
-      </root>
-    </mxGraphModel>
-  </diagram>
-</mxfile>`;
+            return `<?xml version="1.0" encoding="UTF-8"?>\n<mxfile host="app.diagrams.net" modified="${new Date().toISOString()}" agent="QuickDevKit SVG Converter v1.1.0" etag="${Math.random().toString(36).substring(7)}" version="24.6.4" type="device">\n  <diagram name="Converted from ${he.encode(filename)}" id="diagram-1">\n    <mxGraphModel dx="${width*1.2}" dy="${height*1.2}" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="${width}" pageHeight="${height}" math="0" shadow="0">\n      <root>\n        <mxCell id="0" />\n        <mxCell id="1" parent="0" />\n${cellsXml}\n      </root>\n    </mxGraphModel>\n  </diagram>\n</mxfile>`;
         }
 
         // --- END OF SVG CONVERSION LOGIC ---
@@ -1992,7 +1940,7 @@ ${cellsXml}
         });
         
         // he.js library for HTML entity encoding
-        !function(e,t){"object"==typeof exports&&"undefined"!=typeof module?module.exports=t():"function"==typeof define&&define.amd?define(t):(e=e||self).he=t()}(this,function(){"use strict";var e,t=/[\0-\x1F\x7F-\x9F]/g,r=/[\0-\x1F\x7F-\x9F\u00AD\u0600-\u0605\u061C\u06DD\u070F\u08E2\u180E\u2000-\u200F\u2028-\u202F\u205F\u2060-\u206F\u3000\uFEFF\uFFFB]/,n=/[&<>"]/g,o=RegExp(n.source),i=/[&<>"]/g,s=RegExp(i.source),a=/[<>"]/g,c=RegExp(a.source),u=/[<>"]/g,p=RegExp(u.source),l=/[<>"]/,f=RegExp(l.source),d=/[<>"]/,h=RegExp(d.source),g=e=>{const t=Object.create(null);let r,n=0;for(r in e)t[e[r]]=r.slice(n,n+=1);return t},m=Object.create(null),v=Object.create(null),y=Object.create(null),b=Object.create(null),x=Object.create(null),w=Object.create(null);e={encode:function(e,t){let r=String(e);if(!r)return"";const n=(t=t||{}).useNamedReferences,a=t.decimal,c=void 0===t.encodeEverything||t.encodeEverything,u=void 0===t.strict||t.strict,p=t.allowUnsafeSymbols;if(p&&c)throw new Error("The `allowUnsafeSymbols` and `encodeEverything` options are mutually exclusive.");if(p&&!u)throw new Error("The `allowUnsafeSymbols` option requires the `strict` option to be enabled.");let l;return l=c?i:l=u?o:n?f:s,r.replace(l,e=>"&"==e?"&amp;":"<"==e?"&lt;":">"==e?"&gt;":'"'==e?"&quot;":"'"==e?"&#x27;":"`"==e?"&#x60;":"")},decode:function(e,n){const o=(n=n||{}).strict,i=n.scope;if(!e)return"";const s=e=>console.log(`Parse error: ${e} in ${i}.`),a=o?s:()=>{};let c=e;return o&&!r.test(e)||(c=e.replace(t,"")),c.replace(/&(?:#([0-9]+)|#x([a-fA-F0-9]+)|([0-9a-zA-Z]+));/g,(e,t,r,n)=>{if(n){if("Object"==i&&"constructor"==n.toLowerCase()||"DOM"==i&&("innerHTML"==n.toLowerCase()||"outerHTML"==n.toLowerCase()))return a(`Blacklisted attribute name: \`${n}\``),e;if(n in m)return m[n];if(n in v)return v[n];a(`Invalid named character reference: \`&${n};\``)}else{let o;if(o=t?parseInt(t,10):parseInt(r,16),o>=1114112)return a(`Invalid character code point: \`${o}\``),e;if(o>=55296&&o<=57343)return a(`Invalid character code point: \`${o}\``),e;if(o<=65535&&o>=65533)return a(`Invalid character code point: \`${o}\``),e;if(function(e){return e>=1&&e<=8||11==e||e>=13&&e<=31||e>=127&&e<=159||e>=64976&&e<=65007||65535==e||65534==e}(o))return a(`Invalid character code point: \`${o}\``),e;if(o in y)return y[o];let i=String.fromCodePoint(o);return y[o]=i,i}return e})},escape:function(e){const t=String(e);return t.replace(p,e=>"&"==e?"&amp;":"<"==e?"&lt;":">"==e?"&gt;":'"'==e?"&quot;":"'"==e?"&#x27;":"`"==e?"&#x60;":"")},unescape:function(e,t){const r=(t=t||{}).strict;let n=e;if(!n)return"";const o=r?s:h;return n.replace(o,e=>"&amp;"==e?"&":"&lt;"==e?"<":"&gt;"==e?">":"&quot;"==e?'"':"&#x27;"==e?"'":"&#x60;"==e?"`":"")},version:"1.0.0"};return e});
+        !function(e,t){"object"==typeof exports&&"undefined"!=typeof module?module.exports=t():"function"==typeof define&&define.amd?define(t):(e=e||self).he=t()}(this,function(){"use strict";var e,t=/[\0-\x1F\x7F-\x9F]/g,r=/[\0-\x1F\x7F-\x9F\u00AD\u0600-\u0605\u061C\u06DD\u070F\u08E2\u180E\u2000-\u200F\u2028-\u202F\u205F\u2060-\u206F\u3000\uFEFF\uFFFB]/,n=/[&<>"]/g,o=RegExp(n.source),i=/[&<>"]/g,s=RegExp(i.source),a=/[<>"]/,c=RegExp(a.source),u=/[<>"]/,p=RegExp(u.source),l=/[<>"]/,f=RegExp(l.source),d=/[<>"]/,h=RegExp(d.source),g=e=>{const t=Object.create(null);let r,n=0;for(r in e)t[e[r]]=r.slice(n,n+=1);return t},m=Object.create(null),v=Object.create(null),y=Object.create(null),b=Object.create(null),x=Object.create(null),w=Object.create(null);e={encode:function(e,t){let r=String(e);if(!r)return"";const n=(t=t||{}).useNamedReferences,a=t.decimal,c=void 0===t.encodeEverything||t.encodeEverything,u=void 0===t.strict||t.strict,p=t.allowUnsafeSymbols;if(p&&c)throw new Error("The `allowUnsafeSymbols` and `encodeEverything` options are mutually exclusive.");if(p&&!u)throw new Error("The `allowUnsafeSymbols` option requires the `strict` option to be enabled.");let l;return l=c?i:l=u?o:n?f:s,r.replace(l,e=>"&"==e?"&amp;":"<"==e?"&lt;":">"==e?"&gt;":'"'==e?"&quot;":"'"==e?"&#x27;":"`"==e?"&#x60;":"")},decode:function(e,n){const o=(n=n||{}).strict,i=n.scope;if(!e)return"";const s=e=>console.log(`Parse error: ${e} in ${i}.`),a=o?s:()=>{};let c=e;return o&&!r.test(e)||(c=e.replace(t,"")),c.replace(/&(?:#([0-9]+)|#x([a-fA-F0-9]+)|([0-9a-zA-Z]+));/g,(e,t,r,n)=>{if(n){if("Object"==i&&"constructor"==n.toLowerCase()||"DOM"==i&&("innerHTML"==n.toLowerCase()||"outerHTML"==n.toLowerCase()))return a(`Blacklisted attribute name: \`${n}\``),e;if(n in m)return m[n];if(n in v)return v[n];a(`Invalid named character reference: \`&${n};\``)}else{let o;if(o=t?parseInt(t,10):parseInt(r,16),o>=1114112)return a(`Invalid character code point: \`${o}\``),e;if(o>=55296&&o<=57343)return a(`Invalid character code point: \`${o}\``),e;if(o<=65535&&o>=65533)return a(`Invalid character code point: \`${o}\``),e;if(function(e){return e>=1&&e<=8||11==e||e>=13&&e<=31||e>=127&&e<=159||e>=64976&&e<=65007||65535==e||65534==e}(o))return a(`Invalid character code point: \`${o}\``),e;if(o in y)return y[o];let i=String.fromCodePoint(o);return y[o]=i,i}return e})},escape:function(e){const t=String(e);return t.replace(p,e=>"&"==e?"&amp;":"<"==e?"&lt;":">"==e?"&gt;":'"'==e?"&quot;":"'"==e?"&#x27;":"`"==e?"&#x60;":"")},unescape:function(e,t){const r=(t=t||{}).strict;let n=e;if(!n)return"";const o=r?s:h;return n.replace(o,e=>"&amp;"==e?"&":"&lt;"==e?"<":"&gt;"==e?">":"&quot;"==e?'"':"&#x27;"==e?"'":"&#x60;"==e?"`":"")},version:"1.0.0"};return e});
         
         // Initial setup
         updateConvertButtonState();
